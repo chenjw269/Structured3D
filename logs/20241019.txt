@@ -1,0 +1,5 @@
+1. 从观测数据计算 BEV 占用网格
+- bev_observation/generate_bev.py
+
+2. 统计所有场景的坐标范围，根据该范围设置地图大小
+- preprocessing/boundary_statics.py

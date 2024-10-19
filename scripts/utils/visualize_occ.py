@@ -8,8 +8,8 @@ from PIL import Image
 def visualize_occ(semantic_voxel, semantic_color_dict):
     
     # 创建占用网格
-    semantic_voxel_size = semantic_voxel.shape[0]
-    semantic_voxel_img = np.ones([semantic_voxel_size, semantic_voxel_size, 3])
+    semantic_voxel_size = (semantic_voxel.shape[0], semantic_voxel.shape[1])
+    semantic_voxel_img = np.ones([semantic_voxel_size[0], semantic_voxel_size[1], 3])
     
     # 遍历所有的语义类别
     for semantic_type in semantic_color_dict.keys():

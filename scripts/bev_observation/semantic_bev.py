@@ -6,7 +6,7 @@ sys.path.append(".")
 
 from scripts.bev_observation.depth_to_3d import depth_to_3d # 深度图转点云
 from scripts.bev_observation.points_aug import * # 点云稠密化方法
-
+from assets.semantic2label import *
 
 def generate_semantic_voxel(depth_pth, semantic_pth):
     
@@ -41,29 +41,29 @@ def generate_semantic_voxel(depth_pth, semantic_pth):
     # 栅格化：遍历不同语义，栅格化点云，填充网格
     ######################################
     # 创建空占用网格
-    # 单格大小为 0.01m x 0.01m
-    semantic_voxel_size = 600 # 600 x 600 → 6m x 6m
+    resolution = 0.025 # 单格大小为 25m x 25cm
+    semantic_voxel_size = 256 # 256 x 256 → 6.4m x 6.4m
     semantic_voxel = np.zeros([semantic_voxel_size, semantic_voxel_size])
 
     # 遍历不同语义类别    
-    semantic_type_list = list(LABEL_TO_COLOR.keys())  # 所有的语义类别
-    for i in NOT_VIS_TYPE:
-        semantic_type_list.remove(i)
-    
+    semantic_type_list = list(SEMANTIC_TO_LABEL.keys())  # 所有的语义类别
+    # for i in NOT_VIS_TYPE:
+    #     semantic_type_list.remove(i)
     # semantic_type_list = VIS_TYPE
     
     for semantic_type in semantic_type_list:
         # 查表，该语义类别对应的分割颜色
-        semantic_color = LABEL_TO_COLOR[semantic_type]
-        # 选择该语义类别对应的点云
-        semantic_index = np.where(np.all(semantic_img == semantic_color, axis=-1))
+        semantic_color = SEMANTIC_TO_COLOR[semantic_type]
+        # 选择该语义类别位置处，对应的点云
+        semantic_index = np.all(semantic_img == semantic_color, axis=-1)
+        # 索引该语义类别对应的点云
         semantic_depth = depth_pc[semantic_index]
         # 如果没有该类别的点云，则跳转到下一个语义类别
         if semantic_depth.shape[0] == 0:
             continue
         # 点云稠密化
         # semantic_depth = points_noise(semantic_depth)
-        # semantic_depth = points_interpolation(semantic_depth)
+        semantic_depth = points_interpolation(semantic_depth)
         # 将 numpy 数组转换为 Open3D 点云对象
         point_cloud = o3d.geometry.PointCloud()
         point_cloud.points = o3d.utility.Vector3dVector(semantic_depth)
@@ -80,14 +80,15 @@ def generate_semantic_voxel(depth_pth, semantic_pth):
             voxel_origin = voxel.grid_index * voxel_size + voxel_grid.origin
             # 计算体素坐标
             # 坐标转换：点云坐标→体素坐标
-            voxel_index_0 = int(voxel_origin[0] // 0.01) + int(semantic_voxel_size / 2)
-            voxel_index_1 = int(voxel_origin[1] // 0.01) + int(semantic_voxel_size / 2)
+            voxel_index_0 = int(voxel_origin[0] // resolution) + int(semantic_voxel_size / 2)
+            voxel_index_1 = int(voxel_origin[1] // resolution) + int(semantic_voxel_size / 2)
             # 填充体素网格
             # 体素网格范围多大，就用多大范围内的点云
             if 0 <= voxel_index_0 < semantic_voxel_size \
                 and 0 <= voxel_index_1 < semantic_voxel_size:
 
-                # 语义标签 +1（从 1 开始），因为默认值是 0（不能从 0 开始）
-                semantic_voxel[voxel_index_1][voxel_index_0] = (semantic_type_list.index(semantic_type) + 1)
+                # # 语义标签 +1（从 1 开始），因为默认值是 0（不能从 0 开始）
+                # semantic_voxel[voxel_index_1][voxel_index_0] = (semantic_type_list.index(semantic_type) + 1)
+                semantic_voxel[voxel_index_1][voxel_index_0] = SEMANTIC_TO_LABEL[semantic_type]
 
     return semantic_voxel

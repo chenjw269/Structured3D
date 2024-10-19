@@ -25,23 +25,13 @@ def read_obj(objs, ins2sem, ):
         else:
             continue
 
-        # 获取实例的边界
+        # 获取实例的边界等信息，单位为 mm
         basis = np.array(obj['basis'])
         coeffs = np.array(obj['coeffs'])
         centroid = np.array(obj['centroid'])
 
         corners = get_corners_of_bb3d_no_index(basis, coeffs, centroid)
         polygon = corners[[0, 1, 2, 3, 0], :2]
-
-        # 将多边形的顶点转换成 1 cm/pixel
-        for idx, vertex in enumerate(polygon):
-            vertex = [int(vertex[0] / 10), int(vertex[1] / 10)]
-            polygon[idx] = vertex
-        # 各坐标加上偏移量 400 pixel
-        for idx, vertex in enumerate(polygon):
-            vertex = [int(vertex[0] + 400), int(vertex[1] + 400)]
-            polygon[idx] = vertex
-        polygon = polygon.astype(int)
 
         obj_ret.append([polygon, ins_semantic])
 
