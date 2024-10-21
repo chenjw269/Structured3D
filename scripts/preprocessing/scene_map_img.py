@@ -25,9 +25,12 @@ from scripts.utils.visualize_occ import visualize_occ
 if __name__ == "__main__":
     
     data_pth = "e:/datasets/Structure3D/Structured3D"
+    output_pth = "e:/datasets/Structure3D_map/Structured3D"
     
-    # Structured3D 包括 3500 个场景
-    scene_index_list = [f"scene_{num:05}" for num in range(3500)]
+    # # Structured3D 包括 3500 个场景
+    # scene_index_list = [f"scene_{num:05}" for num in range(3500)]
+    # 统计前 100 个场景
+    scene_index_list = [f"scene_{num:05}" for num in range(100)]
     
     # label_color_dict = generate_colors(13)
     # print(label_color_dict)
@@ -92,13 +95,21 @@ if __name__ == "__main__":
         # # 上下翻转图像
         # map_occ = np.flipud(map_occ)
 
-        # 可视化结果
-        cv2.imshow("CAD Map", map_img)
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
+        # # 可视化结果
+        # cv2.imshow("CAD Map", map_img)
+        # cv2.waitKey(0)
+        # cv2.destroyAllWindows()
         
         # plt.figure(figsize=(10, 10))
         # plt.imshow(map_img)
         # plt.show()
 
         # 保存结果
+        scene_output_dir = os.path.join(output_pth, scene_index)
+        os.makedirs(scene_output_dir, exist_ok=True)
+        # np.array
+        scene_output_pth_array = os.path.join(output_pth, scene_index, "map.npy")
+        np.save(scene_output_pth_array, map_occ)
+        # 图片
+        scene_output_pth_img = os.path.join(output_pth, scene_index, "map.png")
+        cv2.imwrite(scene_output_pth_img, map_img)
