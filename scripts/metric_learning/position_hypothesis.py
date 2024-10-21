@@ -3,15 +3,17 @@
 import torch
 
 
-def position_hypothesis(x_range, y_range, step):
+def position_hypothesis(x_range, y_range, step, boundary):
+    
+    padding = max(step, boundary)
     
     x_range = [
-        x_range[0] - step,
-        x_range[1] + step
+        x_range[0] - padding,
+        x_range[1] + padding
     ]
     y_range = [
-        y_range[0] - step,
-        y_range[1] + step
+        y_range[0] - padding,
+        y_range[1] + padding
     ]
     
     Iy, Ix = torch.meshgrid(
@@ -21,11 +23,3 @@ def position_hypothesis(x_range, y_range, step):
     samples_loc = torch.stack([Ix, Iy], dim=-1).reshape(-1, 2)
 
     return samples_loc
-
-
-if __name__ == "__main__":
-
-    window_size = 256
-    slide_step = 10
-
-

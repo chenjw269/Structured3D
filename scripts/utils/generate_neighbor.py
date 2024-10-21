@@ -31,7 +31,7 @@ def generate_neighbor_within(position, nums, radius, p_bound=((0,1600),(0,1200))
             return random_points
 
 
-def generate_neighbor_between(position, nums, radius_1, radius_2, p_bound=(0,800)):
+def generate_neighbor_between(position, nums, radius_1, radius_2, p_bound=((0,1600),(0,1200))):
     """生成两个范围之间的随机点
 
     Args:
@@ -40,7 +40,8 @@ def generate_neighbor_between(position, nums, radius_1, radius_2, p_bound=(0,800
         radius_2 (int): 较大半径范围
         p_bound (list(int, int)): 坐标范围
     """
-    assert p_bound[0] < p_bound[1]
+    assert p_bound[0][0] < p_bound[0][1]
+    assert p_bound[1][0] < p_bound[1][1]
     random_points = []
     
     while True:
@@ -55,7 +56,9 @@ def generate_neighbor_between(position, nums, radius_1, radius_2, p_bound=(0,800
         y = int(position[1] + r * math.sin(theta))
         
         # 检查坐标是否越界
-        if (p_bound[0] < x < p_bound[1] and p_bound[0] < y < p_bound[1]):
+        x_available = (p_bound[0][0] < x < p_bound[0][1])
+        y_available = (p_bound[1][0] < y < p_bound[1][1])
+        if (x_available and y_available):
             random_points.append((x, y))
     
         if len(random_points) == nums:

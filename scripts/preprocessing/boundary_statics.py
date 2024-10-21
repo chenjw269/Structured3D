@@ -3,6 +3,7 @@
 import os
 import json
 import numpy as np
+import pandas as pd
 from tqdm import tqdm
 
 import sys
@@ -13,7 +14,7 @@ from scripts.utils.lines_to_polygons import convert_lines_to_vertices
 
 if __name__ == "__main__":
     
-    data_pth = "e:/datasets/Structure3D/Structured3D"
+    data_pth = "d:/datasets/Structure3D/Structured3D"
     
     # # Structured3D 包括 3500 个场景
     # scene_index_list = [f"scene_{num:05}" for num in range(3500)]
@@ -68,6 +69,8 @@ if __name__ == "__main__":
         ############################################
         # 统计场景的坐标范围
         ############################################
+        scene_info = {}
+        
         # 所有顶点坐标列表
         junctions = np.array([junc['coordinate'][:2] for junc in annos['junctions']])
         # 在尾部插入头，令多边形首尾相连
@@ -76,16 +79,28 @@ if __name__ == "__main__":
         outerwall_polygon = junctions[outerwall_polygon]
         # 每个场景中，xy 坐标的最大最小值
         x_min_scene = outerwall_polygon[:,0].min()
+        scene_info["x_min"] = [x_min_scene]
         x_max_scene = outerwall_polygon[:,0].max()
+        scene_info["x_max"] = [x_max_scene]
         y_min_scene = outerwall_polygon[:,1].min()
+        scene_info["y_min"] = [y_min_scene]
         y_max_scene = outerwall_polygon[:,1].max()
+        scene_info["y_max"] = [y_max_scene]
         # 移动一定的距离，将场景的中心调整为原点
         x_center = (x_min_scene + x_max_scene) / 2
+        scene_info["x_center"] = [x_center]
         y_center = (y_min_scene + y_max_scene) / 2
+        scene_info["y_center"] = [y_center]
         x_min_scene = x_min_scene - x_center
         y_min_scene = y_min_scene - y_center
         x_max_scene = x_max_scene - x_center
         y_max_scene = y_max_scene - y_center
+
+        # 保存场景的边界信息
+        output_pth = os.path.join(data_pth, scene_index, "boundary.csv")
+        scene_info_df = pd.DataFrame(scene_info)
+        scene_info_df.to_csv(output_pth, index=False)
+
         # 更新统计信息中，两个坐标轴坐标的最小值和最大值
         if x_min_scene < x_min_total:
             x_min_total = x_min_scene

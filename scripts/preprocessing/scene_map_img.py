@@ -4,6 +4,7 @@ import os
 import cv2
 import json
 import numpy as np
+import pandas as pd
 from tqdm import tqdm
 import matplotlib.pyplot as plt
 
@@ -49,6 +50,9 @@ if __name__ == "__main__":
         obj_map = os.path.join(data_pth, scene_index, "bbox_3d.json")
         with open(obj_map, encoding="utf-8") as f:
             obj_map = json.load(f)
+        # 物体边界数据
+        scene_info = os.path.join(data_pth, scene_index, "boundary.csv")
+        scene_info = pd.read_csv(scene_info)
         # 实例语义映射
         ins2sem = os.path.join(data_pth, scene_index, "ins_semantic.json")
         with open(ins2sem, encoding="utf-8") as f:
@@ -56,6 +60,7 @@ if __name__ == "__main__":
 
         # 从地图标注中读取顶点
         junctions = np.array([junc['coordinate'][:2] for junc in annos['junctions']])
+        junctions = junctions - np.array([scene_info['x_center'][0], scene_info['y_center'][0]])
         # 从地图标注中读取区域
         areawall_polygons = read_area_wall(annos)
         
