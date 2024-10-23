@@ -17,9 +17,11 @@ def check_json_file(file_path):
 if __name__ == "__main__":
 
     # 记录到日志文件
-    f = open("logs/scene_annos.txt", "w", encoding="utf-8")
+    f = open("../logs/scene_annos.txt", "w", encoding="utf-8") # remote
+    data_pth = "/data1/chenjiwei/S3D/zip/Structured3D" # remote
 
-    data_pth = "e:/datasets/Structure3D/Structured3D"
+    # f = open("logs/scene_annos.txt", "w", encoding="utf-8") # local
+    # data_pth = "e:/datasets/Structure3D/Structured3D" # local
 
     # Structured3D 包括 3500 个场景
     scene_index_list = [f"scene_{num:05}" for num in range(3500)]

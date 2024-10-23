@@ -25,9 +25,11 @@ from scripts.utils.visualize_occ import visualize_occ
 
 if __name__ == "__main__":
     
-    data_pth = "e:/datasets/Structure3D/Structured3D"
-    output_pth = "e:/datasets/Structure3D_map/Structured3D"
-    
+    data_pth = "/data1/chenjiwei/S3D/zip/Structured3D" # remote
+    output_pth = "/data1/chenjiwei/S3D/Structure3D_map/Structured3D" # remote
+    # data_pth = "e:/datasets/Structure3D/Structured3D" # local
+    # output_pth = "e:/datasets/Structure3D_map/Structured3D" # local
+
     # Structured3D 包括 3500 个场景
     scene_index_list = [f"scene_{num:05}" for num in range(3500)]
     # # 统计前 100 个场景

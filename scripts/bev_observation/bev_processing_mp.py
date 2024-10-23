@@ -45,18 +45,21 @@ def execute_bev_processing(task):
 if __name__ == "__main__":
 
     # 标注数据缺失的场景
-    with open("logs/scene_annos.txt", encoding="utf-8") as f:
+    with open("../../logs/scene_annos.txt", encoding="utf-8") as f: # remote
+    # with open("logs/scene_annos.txt", encoding="utf-8") as f: # local
+
         scene_invalid = f.readlines()
     for index, item in enumerate(scene_invalid):
         scene_invalid[index] = item.replace("\n", "")
         
     # 观测数据缺失的样本
-    with open("logs/scene_observation.txt", encoding="utf-8") as f:
-        obs_invalid = f.readlines()
+    with open("../../logs/scene_observation.txt", encoding="utf-8") as f: # remote
+    # with open("logs/scene_observation.txt", encoding="utf-8") as f:  # local
+            obs_invalid = f.readlines()
     for index, item in enumerate(obs_invalid):
         obs_invalid[index] = item.replace("\n", "")
 
-    scene_index_list = [f"scene_{num:05}" for num in range(1000)] # 前 1000 个场景
+    scene_index_list = [f"scene_{num:05}" for num in range(3500)] # 前 1000 个场景
 
     #########################################
     # 统计所有场景下的所有样本
@@ -89,7 +92,7 @@ if __name__ == "__main__":
     start_time = time.time()
 
     # 用所有样本索引作为参数，构建任务池
-    with concurrent.futures.ThreadPoolExecutor(max_workers=8) as executor:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=64) as executor:
         futures = {executor.submit(execute_bev_processing, task): task for task in sample_list_total}
 
         with tqdm(total=len(futures)) as pbar:
