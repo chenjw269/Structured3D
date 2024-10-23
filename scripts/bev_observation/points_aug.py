@@ -26,12 +26,18 @@ def points_interpolation(points):
     Args:
         points (np.array): 点云数组
     """
-    # 设置近邻点的数量 K
-    K = 5
-    
-    # KNN找到每个点的最近邻
-    nbrs = NearestNeighbors(n_neighbors=K, algorithm='ball_tree').fit(points)
-    distances, indices = nbrs.kneighbors(points)
+    try:
+        # 设置近邻点的数量 K
+        K = 5
+        # KNN找到每个点的最近邻
+        nbrs = NearestNeighbors(n_neighbors=K, algorithm='ball_tree').fit(points)
+        # 近邻点的距离和索引
+        distances, indices = nbrs.kneighbors(points)
+    except:
+        # 如果找不到足够的近邻点，则减少近邻数量到 1
+        K = 1
+        nbrs = NearestNeighbors(n_neighbors=K, algorithm='ball_tree').fit(points)
+        distances, indices = nbrs.kneighbors(points)
 
     # 初始化插值点的列表
     interpolated_points = []
@@ -44,6 +50,9 @@ def points_interpolation(points):
 
     # 将插值点转换为 numpy 数组
     interpolated_points = np.array(interpolated_points)
+    # 如果没有足够的点进行插值，则返回原始点
+    if interpolated_points.shape[0] == 0:
+        return points
 
     # 合并原始点云和插值生成的点
     dense_points = np.vstack((points, interpolated_points))

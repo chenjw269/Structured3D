@@ -16,13 +16,30 @@ if __name__ == "__main__":
 
     data_pth = "e:/datasets/Structure3D/Structured3D"
 
-    # # Structured3D 包括 3500 个场景
-    # scene_index_list = [f"scene_{num:05}" for num in range(3500)]
-    # 统计前 100 个场景
-    scene_index_list = [f"scene_{num:05}" for num in range(100)]
+    # Structured3D 包括 3500 个场景
+    scene_index_list = [f"scene_{num:05}" for num in range(3500)]
+    # # 统计前 100 个场景
+    # scene_index_list = [f"scene_{num:05}" for num in range(100)]
+
+    # 标注数据缺失的场景
+    with open("logs/scene_annos.txt", encoding="utf-8") as f:
+        scene_invalid = f.readlines()
+    for index, item in enumerate(scene_invalid):
+        scene_invalid[index] = item.replace("\n", "")
+        
+    # 观测数据缺失的样本
+    with open("logs/scene_observation.txt", encoding="utf-8") as f:
+        obs_invalid = f.readlines()
+    for index, item in enumerate(obs_invalid):
+        obs_invalid[index] = item.replace("\n", "")
 
     # 遍历场景
-    for scene_index in tqdm(scene_index_list):
+    for scene_index in tqdm(scene_index_list[706:]):
+
+        # 缺少标注的场景作废
+        if scene_index in scene_invalid:
+            tqdm.write(f"Jmp annos loss {scene_index}")
+            continue
 
         # 记录当前场景下实例与语义类别的对应关系
         scene_ins2sem_dict = {}
@@ -30,7 +47,12 @@ if __name__ == "__main__":
         # 观测数据
         obs_dir = os.path.join(data_pth, scene_index, "2D_rendering")
         obs_list = os.listdir(obs_dir)
-        for obs_item in obs_list:
+        for obs_item in tqdm(obs_list, leave=False):
+
+            # 缺少观测值的样本作废
+            if f"{scene_index},{obs_item}" in obs_invalid:
+                tqdm.write(f"Jmp obs loss {scene_index} {obs_item}")
+                continue
 
             # 检查文件是否完整：rgb 图、语义分割图、深度图
 

@@ -14,12 +14,21 @@ from scripts.utils.lines_to_polygons import convert_lines_to_vertices
 
 if __name__ == "__main__":
     
-    data_pth = "d:/datasets/Structure3D/Structured3D"
+    data_pth = "e:/datasets/Structure3D/Structured3D"
     
-    # # Structured3D 包括 3500 个场景
-    # scene_index_list = [f"scene_{num:05}" for num in range(3500)]
-    # 统计前 100 个场景
-    scene_index_list = [f"scene_{num:05}" for num in range(100)]
+    # Structured3D 包括 3500 个场景
+    scene_index_list = [f"scene_{num:05}" for num in range(3500)]
+    # # 统计前 100 个场景
+    # scene_index_list = [f"scene_{num:05}" for num in range(100)]
+
+    # 标注数据缺失的场景
+    with open("logs/scene_annos.txt", encoding="utf-8") as f:
+        scene_invalid = f.readlines()
+    for index, item in enumerate(scene_invalid):
+        scene_invalid[index] = item.replace("\n", "")
+
+    # # 记录不能正确计算边线的场景
+    # f = open("")
 
     # 统计场景的坐标范围
     x_max_total = -float('inf')
@@ -28,7 +37,14 @@ if __name__ == "__main__":
     y_min_total = float('inf')
 
     # 遍历场景
+    scene_index_list = scene_index_list[:1500]
     for scene_index in tqdm(scene_index_list):
+        # 缺少标注的场景作废
+        if scene_index in scene_invalid:
+            tqdm.write(f"Jmp annos loss {scene_index}")
+            continue
+        else:
+            tqdm.write(f'Current scene: {scene_index}')  # 输出当前场景
 
         # 读取场景标注文件
         with open(os.path.join(data_pth, scene_index, "annotation_3d.json"), encoding="utf-8") as f:
@@ -61,10 +77,18 @@ if __name__ == "__main__":
             # 将属于门窗的 lineIDs 排除
             lineIDs = np.setdiff1d(lineIDs, lines_holes)
             junction_pairs = [np.where(np.array(annos['lineJunctionMatrix'][lineID]))[0].tolist() for lineID in lineIDs]
-            for start, end in junction_pairs:
+            for junction_item in junction_pairs:
+                if len(junction_item) == 2:
+                    start, end = junction_item
+                else:
+                    continue
                 if start in junction_floor and end in junction_floor:
                     outerwall_floor.append([start, end])
-        outerwall_polygon = convert_lines_to_vertices(outerwall_floor)[0]
+        try:
+            outerwall_polygon = convert_lines_to_vertices(outerwall_floor)[0]
+        except:
+            tqdm.write(f"Jmp {scene_index} due to line error")
+            continue
 
         ############################################
         # 统计场景的坐标范围

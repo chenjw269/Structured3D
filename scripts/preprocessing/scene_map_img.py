@@ -28,11 +28,19 @@ if __name__ == "__main__":
     data_pth = "e:/datasets/Structure3D/Structured3D"
     output_pth = "e:/datasets/Structure3D_map/Structured3D"
     
-    # # Structured3D 包括 3500 个场景
-    # scene_index_list = [f"scene_{num:05}" for num in range(3500)]
-    # 统计前 100 个场景
-    scene_index_list = [f"scene_{num:05}" for num in range(100)]
+    # Structured3D 包括 3500 个场景
+    scene_index_list = [f"scene_{num:05}" for num in range(3500)]
+    # # 统计前 100 个场景
+    # scene_index_list = [f"scene_{num:05}" for num in range(100)]
+
+    # 标注数据缺失的场景
+    with open("logs/scene_annos.txt", encoding="utf-8") as f:
+        scene_invalid = f.readlines()
+    for index, item in enumerate(scene_invalid):
+        scene_invalid[index] = item.replace("\n", "")
+    # 边界不能正确表示的场景
     
+
     # label_color_dict = generate_colors(13)
     # print(label_color_dict)
     
@@ -40,7 +48,15 @@ if __name__ == "__main__":
     map_occ_size = (1600, 1200) # x 轴范围为 (-20m, 20m) y 轴范围为 (-15m, 15m)
 
     # 遍历场景
+    scene_index_list = scene_index_list[:1500]
     for scene_index in tqdm(scene_index_list):
+
+        # 缺少标注的场景作废
+        if scene_index in scene_invalid:
+            tqdm.write(f"Jmp annos loss {scene_index}")
+            continue
+        else:
+            tqdm.write(f'Current scene: {scene_index}')  # 输出当前场景
 
         # 地图标注数据
         annos = os.path.join(data_pth, scene_index, "annotation_3d.json")
@@ -50,7 +66,7 @@ if __name__ == "__main__":
         obj_map = os.path.join(data_pth, scene_index, "bbox_3d.json")
         with open(obj_map, encoding="utf-8") as f:
             obj_map = json.load(f)
-        # 物体边界数据
+        # 场景边界数据
         scene_info = os.path.join(data_pth, scene_index, "boundary.csv")
         scene_info = pd.read_csv(scene_info)
         # 实例语义映射
@@ -58,11 +74,14 @@ if __name__ == "__main__":
         with open(ins2sem, encoding="utf-8") as f:
             ins2sem = json.load(f)
 
+        ##########################
+        # 坐标对齐
+        ##########################
         # 从地图标注中读取顶点
         junctions = np.array([junc['coordinate'][:2] for junc in annos['junctions']])
+        # 所有顶点进行平移，将场景中心对齐到 (0,0)
         junctions = junctions - np.array([scene_info['x_center'][0], scene_info['y_center'][0]])
-        # 从地图标注中读取区域
-        areawall_polygons = read_area_wall(annos)
+        
         
         # 创建地图占用网格
         map_occ = np.zeros(map_occ_size, dtype=np.uint8)
@@ -70,6 +89,9 @@ if __name__ == "__main__":
         #########################################
         # 绘制区域的边缘墙面
         #########################################
+        # 从地图标注中读取区域
+        areawall_polygons = read_area_wall(annos)
+        
         color_wall = 1
         thickness = 2
         for (polygon, poly_type) in areawall_polygons:
@@ -112,9 +134,9 @@ if __name__ == "__main__":
         # 保存结果
         scene_output_dir = os.path.join(output_pth, scene_index)
         os.makedirs(scene_output_dir, exist_ok=True)
-        # np.array
+        # 占用网格 np.array
         scene_output_pth_array = os.path.join(output_pth, scene_index, "map.npy")
         np.save(scene_output_pth_array, map_occ)
-        # 图片
+        # 图片 png
         scene_output_pth_img = os.path.join(output_pth, scene_index, "map.png")
         cv2.imwrite(scene_output_pth_img, map_img)
