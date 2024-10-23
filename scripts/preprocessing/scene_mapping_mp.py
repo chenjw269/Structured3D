@@ -22,8 +22,8 @@ from scripts.utils.visualize_occ import visualize_occ
 
 data_pth = "e:/datasets/Structure3D/Structured3D" # remote
 output_pth = "e:/datasets/Structure3D_map/Structured3D" # remote
-data_pth = "e:/datasets/Structure3D/Structured3D" # local
-output_pth = "e:/datasets/Structure3D_map/Structured3D" # local
+# data_pth = "e:/datasets/Structure3D/Structured3D" # local
+# output_pth = "e:/datasets/Structure3D_map/Structured3D" # local
 
 resolution = 25  # 2.5 cm, 0.025 m / pixel
 map_occ_size = (1600, 1600)  # x 轴范围为 (-20m, 20m) y 轴范围为 (-20m, 20m)
