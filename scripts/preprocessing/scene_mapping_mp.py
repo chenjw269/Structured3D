@@ -29,7 +29,9 @@ resolution = 25  # 2.5 cm, 0.025 m / pixel
 map_occ_size = (1600, 1600)  # x 轴范围为 (-20m, 20m) y 轴范围为 (-20m, 20m)
 
 # 标注数据缺失的场景
-with open("logs/scene_annos.txt", encoding="utf-8") as f:
+with open("../../logs/scene_annos.txt", encoding="utf-8") as f: # remote
+# with open("logs/scene_annos.txt", encoding="utf-8") as f: # local
+
     scene_invalid = f.readlines()
 for index, item in enumerate(scene_invalid):
     scene_invalid[index] = item.replace("\n", "")
@@ -122,16 +124,24 @@ def execute_semantic_mapping(scene_index):
 if __name__ == '__main__':
 
     # scene_index_list = [f"scene_{num:05}" for num in range(3500)]
+<<<<<<< HEAD
     scene_index_list = [f"scene_{num:05}" for num in range(100)] # 前 100 个场景
+=======
+    scene_index_list = [f"scene_{num:05}" for num in range(1500)] # 前 1w00 个场景
+>>>>>>> 9d0e8e894004b2ef56edb1579c747e359c016fe0
 
     for scene_index in tqdm(scene_index_list):
         # 缺少标注的场景作废
         if scene_index in scene_invalid:
             scene_index_list.remove(scene_index)
 
+<<<<<<< HEAD
     # with concurrent.futures.ThreadPoolExecutor(max_workers=64) as executor:
     with concurrent.futures.ProcessPoolExecutor(max_workers=4) as executor:
     
+=======
+    with concurrent.futures.ProcessPoolExecutor(max_workers=64) as executor:
+>>>>>>> 9d0e8e894004b2ef56edb1579c747e359c016fe0
         futures = {executor.submit(execute_semantic_mapping, task): task for task in scene_index_list}
 
         with tqdm(total=len(futures)) as pbar:
