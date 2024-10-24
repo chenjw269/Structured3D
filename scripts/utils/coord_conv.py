@@ -15,3 +15,5 @@ def position_to_pixel(ori_pos, resolution, map_occ_size):
     ori_pos = np.array([ori_pos[1], ori_pos[0]])
     
     return ori_pos
+
+# def position_to_pixel_norm(ori_pos, resolution, map_occ_size,)

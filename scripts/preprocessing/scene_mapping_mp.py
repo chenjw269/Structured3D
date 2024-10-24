@@ -20,8 +20,8 @@ from assets.semantic2label import SEMANTIC_TO_LABEL, LABEL_TO_COLOR
 from scripts.utils.visualize_occ import visualize_occ
 
 
-data_pth = "e:/datasets/Structure3D/Structured3D" # remote
-output_pth = "e:/datasets/Structure3D_map/Structured3D" # remote
+# data_pth = "e:/datasets/Structure3D/Structured3D" # remote
+# output_pth = "e:/datasets/Structure3D_map/Structured3D" # remote
 data_pth = "e:/datasets/Structure3D/Structured3D" # local
 output_pth = "e:/datasets/Structure3D_map/Structured3D" # local
 
@@ -121,15 +121,17 @@ def execute_semantic_mapping(scene_index):
 
 if __name__ == '__main__':
 
-    scene_index_list = [f"scene_{num:05}" for num in range(3500)]
-    # scene_index_list = [f"scene_{num:05}" for num in range(100)] # 前 100 个场景
+    # scene_index_list = [f"scene_{num:05}" for num in range(3500)]
+    scene_index_list = [f"scene_{num:05}" for num in range(100)] # 前 100 个场景
 
     for scene_index in tqdm(scene_index_list):
         # 缺少标注的场景作废
         if scene_index in scene_invalid:
             scene_index_list.remove(scene_index)
 
-    with concurrent.futures.ThreadPoolExecutor(max_workers=64) as executor:
+    # with concurrent.futures.ThreadPoolExecutor(max_workers=64) as executor:
+    with concurrent.futures.ProcessPoolExecutor(max_workers=4) as executor:
+    
         futures = {executor.submit(execute_semantic_mapping, task): task for task in scene_index_list}
 
         with tqdm(total=len(futures)) as pbar:
@@ -142,5 +144,3 @@ if __name__ == '__main__':
                     tqdm.write(f"Task {task_id} generated an exception: {e}")
 
                 pbar.update(1)  # 更新进度条
-
-

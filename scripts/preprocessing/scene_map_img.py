@@ -30,10 +30,10 @@ if __name__ == "__main__":
     # data_pth = "e:/datasets/Structure3D/Structured3D" # local
     # output_pth = "e:/datasets/Structure3D_map/Structured3D" # local
 
-    # Structured3D 包括 3500 个场景
-    scene_index_list = [f"scene_{num:05}" for num in range(3500)]
-    # # 统计前 100 个场景
-    # scene_index_list = [f"scene_{num:05}" for num in range(100)]
+    # # Structured3D 包括 3500 个场景
+    # scene_index_list = [f"scene_{num:05}" for num in range(3500)]
+    # 统计前 100 个场景
+    scene_index_list = [f"scene_{num:05}" for num in range(100)]
 
     # 标注数据缺失的场景
     with open("logs/scene_annos.txt", encoding="utf-8") as f:
@@ -47,7 +47,7 @@ if __name__ == "__main__":
     # print(label_color_dict)
     
     resolution = 25 # 2.5 cm, 0.025 m / pixel
-    map_occ_size = (1600, 1200) # x 轴范围为 (-20m, 20m) y 轴范围为 (-15m, 15m)
+    map_occ_size = (1600, 1600) # x 轴范围为 (-20m, 20m) y 轴范围为 (-15m, 15m)
 
     # 遍历场景
     scene_index_list = scene_index_list[:1500]

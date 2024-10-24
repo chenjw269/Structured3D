@@ -32,10 +32,7 @@ if __name__ == "__main__":
     # 遍历场景
     for scene_index in tqdm(scene_index_list):
 
-        # 当前场景下的观测数据
-        obs_dir = os.path.join(data_pth, scene_index, "2D_rendering")
-        obs_list = os.listdir(obs_dir)
-
+        # 遍历场景
         # 当前场景的地图
         scene_map = os.path.join(map_pth, scene_index, "map.npy")
         scene_map = np.load(scene_map)

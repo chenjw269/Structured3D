@@ -37,18 +37,17 @@ def check_image_panorama(file_path):
 if __name__ == "__main__":
 
     # 记录到日志文件
-    f_record = open("../logs/scene_observation.txt", "w", encoding="utf-8") # remote
-    data_pth = "/data1/chenjiwei/S3D/zip/Structured3D" # remote
-
-    # f_record = open("logs/scene_observation.txt", "w", encoding="utf-8") # local
-    # data_pth = "e:/datasets/Structure3D/Structured3D" # local
+    # f_record = open("../logs/scene_observation.txt", "w", encoding="utf-8") # remote
+    # data_pth = "/data1/chenjiwei/S3D/zip/Structured3D" # remote
+    f_record = open("logs/scene_observation.txt", "w", encoding="utf-8") # local
+    data_pth = "e:/datasets/Structure3D/Structured3D" # local
 
     # Structured3D 包括 3500 个场景
     scene_index_list = [f"scene_{num:05}" for num in range(3500)]
 
     # 标注数据缺失的场景
-    with open("../logs/scene_annos.txt", encoding="utf-8") as f: # remote
-    # with open("logs/scene_annos.txt", encoding="utf-8") as f: # local
+    # with open("../logs/scene_annos.txt", encoding="utf-8") as f: # remote
+    with open("logs/scene_annos.txt", encoding="utf-8") as f: # local
             scene_invalid = f.readlines()
     for index, item in enumerate(scene_invalid):
         scene_invalid[index] = item.replace("\n", "")
@@ -86,8 +85,10 @@ if __name__ == "__main__":
             semantic_valid = check_image_panorama(obs_item_semantic_full)
             obs_item_instance_full= os.path.join(obs_item_dir_full, "instance.png")
             instance_valid = check_image_panorama(obs_item_instance_full)
+            obs_item_pos_full = os.path.join(obs_dir, obs_item, "panorama/camera_xyz.txt")
+            pos_valid = os.path.exists(obs_item_pos_full)
             
-            if rgb_valid and depth_valid and semantic_valid and instance_valid:
+            if rgb_valid and depth_valid and semantic_valid and instance_valid and pos_valid:
                 pass
             else:
                 tqdm.write(f"Obs loss {scene_index} {obs_item}")
