@@ -14,15 +14,17 @@ from scripts.utils.lines_to_polygons import convert_lines_to_vertices
 
 if __name__ == "__main__":
     
-    data_pth = "e:/datasets/Structure3D/Structured3D"
-    
+    data_pth = "/data1/chenjiwei/S3D/zip/Structured3D" # remote
+    # data_pth = "e:/datasets/Structure3D/Structured3D" # local
+
     # Structured3D 包括 3500 个场景
     scene_index_list = [f"scene_{num:05}" for num in range(3500)]
     # # 统计前 100 个场景
     # scene_index_list = [f"scene_{num:05}" for num in range(100)]
 
     # 标注数据缺失的场景
-    with open("logs/scene_annos.txt", encoding="utf-8") as f:
+    with open("../../logs/scene_annos.txt", encoding="utf-8") as f: # remote
+    # with open("logs/scene_annos.txt", encoding="utf-8") as f: # local
         scene_invalid = f.readlines()
     for index, item in enumerate(scene_invalid):
         scene_invalid[index] = item.replace("\n", "")
@@ -37,7 +39,7 @@ if __name__ == "__main__":
     y_min_total = float('inf')
 
     # 遍历场景
-    scene_index_list = scene_index_list[:1500]
+    # scene_index_list = scene_index_list[:1500]
     for scene_index in tqdm(scene_index_list):
         # 缺少标注的场景作废
         if scene_index in scene_invalid:
