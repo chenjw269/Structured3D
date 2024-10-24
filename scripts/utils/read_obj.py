@@ -6,7 +6,7 @@ sys.path.append(".")
 from misc.utils import get_corners_of_bb3d_no_index
 
 
-def read_obj(objs, ins2sem, ):
+def read_obj(objs, ins2sem):
     
     obj_ret = []
     

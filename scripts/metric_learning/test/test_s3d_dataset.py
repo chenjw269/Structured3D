@@ -15,6 +15,7 @@ if __name__ == "__main__":
     # test_csv_pth = "e:/datasets/Structure3D_csv/Structured3D/scene_00000/metric_learning/scene_00000.csv"
     test_csv_pth = "e:/datasets/Structure3D_csv/Structured3D/random_train.csv"
     test_dataset = S3D_Dataset(test_csv_pth)
+    print(f"{len(test_dataset)} items in dataset")
 
     test_dataloader = DataLoader(test_dataset, batch_size=2, shuffle=True)
 
@@ -29,6 +30,8 @@ if __name__ == "__main__":
     print(f"Positive {positive.shape}")
     negative = data['negative']
     print(f"Negative {negative.shape}")
+
+    # TODO：可视化
 
     for _ in tqdm(test_dataloader):
         pass

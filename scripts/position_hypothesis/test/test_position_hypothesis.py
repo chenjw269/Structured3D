@@ -8,7 +8,7 @@ import pandas as pd
 import sys
 sys.path.append(".")
 
-from scripts.metric_learning.position_hypothesis import position_hypothesis
+from scripts.position_hypothesis.position_hypothesis import position_hypothesis
 from scripts.utils.coord_conv import position_to_pixel
 
 

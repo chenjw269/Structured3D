@@ -26,16 +26,22 @@ for index, item in enumerate(obs_invalid):
 
 if __name__ == "__main__":
 
-    data_pth = "e:/datasets/Structure3D/Structured3D"
-    bev_pth = "e:/datasets/Structure3D_bev/Structured3D"
-    map_pth = "e:/datasets/Structure3D_map/Structured3D"
-    output_pth = "e:/datasets/Structure3D_csv/Structured3D"
+    # remote data path
+    # data_pth = "e:/datasets/Structure3D/Structured3D" # remote
+    # bev_pth = "e:/datasets/Structure3D_bev/Structured3D" # remote
+    # map_pth = "e:/datasets/Structure3D_map/Structured3D" # remote
+    # output_pth = "e:/datasets/Structure3D_csv/Structured3D" # remote
+    # local data path
+    data_pth = "e:/datasets/Structure3D/Structured3D" # local
+    bev_pth = "e:/datasets/Structure3D_bev/Structured3D" # local
+    map_pth = "e:/datasets/Structure3D_map/Structured3D" # local
+    output_pth = "e:/datasets/Structure3D_csv/Structured3D" # local
 
     resolution = 25
     map_occ_size = (1600, 1600)
 
     # 统计前 100 个场景
-    scene_index_list = [f"scene_{num:05}" for num in range(1000)]
+    scene_index_list = [f"scene_{num:05}" for num in range(100)]
     for scene_index in tqdm(scene_index_list):
         # 缺少标注的场景作废
         if scene_index in scene_invalid:
