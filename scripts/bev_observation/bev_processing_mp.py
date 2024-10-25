@@ -47,16 +47,16 @@ def execute_bev_processing(task):
 if __name__ == "__main__":
 
     # 标注数据缺失的场景
-    with open("../../logs/scene_annos.txt", encoding="utf-8") as f: # remote
-    # with open("logs/scene_annos.txt", encoding="utf-8") as f: # local
+    # with open("../../logs/scene_annos.txt", encoding="utf-8") as f: # remote
+    with open("logs/scene_annos.txt", encoding="utf-8") as f: # local
 
         scene_invalid = f.readlines()
     for index, item in enumerate(scene_invalid):
         scene_invalid[index] = item.replace("\n", "")
         
     # 观测数据缺失的样本
-    with open("../../logs/scene_observation.txt", encoding="utf-8") as f: # remote
-    # with open("logs/scene_observation.txt", encoding="utf-8") as f:  # local
+    # with open("../../logs/scene_observation.txt", encoding="utf-8") as f: # remote
+    with open("logs/scene_observation.txt", encoding="utf-8") as f:  # local
             obs_invalid = f.readlines()
     for index, item in enumerate(obs_invalid):
         obs_invalid[index] = item.replace("\n", "")
@@ -102,7 +102,7 @@ if __name__ == "__main__":
                 task_id = futures[future]
                 try:
                     result = future.result()
-                    tqdm.write(result)
+                    # tqdm.write(result)
                 except Exception as e:
                     tqdm.write(f"Task {task_id} generated an exception: {e}")
                 
