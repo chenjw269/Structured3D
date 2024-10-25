@@ -145,8 +145,9 @@ if __name__ == "__main__":
         # 缺少标注的场景作废
         if scene_index in scene_invalid:
             scene_index_list.remove(scene_index)
+    print("Invalid scenes removed")
 
-    with concurrent.futures.ProcessPoolExecutor(max_workers=16) as executor:
+    with concurrent.futures.ProcessPoolExecutor(max_workers=40) as executor:
 
         futures = {executor.submit(execute_semantic_mapping, task): task for task in scene_index_list}
 
@@ -155,7 +156,7 @@ if __name__ == "__main__":
                 task_id = futures[future]
                 try:
                     result = future.result()
-                    tqdm.write(result)
+                    # tqdm.write(result)
                 except Exception as e:
                     tqdm.write(f"Task {task_id} generated an exception: {e}")
 

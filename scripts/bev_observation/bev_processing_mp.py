@@ -13,10 +13,10 @@ from scripts.utils.visualize_occ import visualize_occ
 from assets.semantic2label import LABEL_TO_COLOR
 
 
-data_pth = "/data1/chenjiwei/S3D/zip/Structured3D" # remote
-output_pth = "/data1/chenjiwei/S3D/Structure3D_bev/Structured3D" # remote
-# data_pth = "e:/datasets/Structure3D/Structured3D"
-# output_pth = "e:/datasets/Structure3D_bev/Structured3D"
+# data_pth = "/data1/chenjiwei/S3D/zip/Structured3D" # remote
+# output_pth = "/data1/chenjiwei/S3D/Structure3D_bev/Structured3D" # remote
+data_pth = "e:/datasets/Structure3D/Structured3D"
+output_pth = "e:/datasets/Structure3D_bev/Structured3D"
 
 def execute_bev_processing(task):
     
@@ -94,8 +94,7 @@ if __name__ == "__main__":
     start_time = time.time()
 
     # 用所有样本索引作为参数，构建任务池
-    # with concurrent.futures.ThreadPoolExecutor(max_workers=64) as executor:
-    with concurrent.futures.ProcessPoolExecutor(max_workers=32) as executor:
+    with concurrent.futures.ProcessPoolExecutor(max_workers=40) as executor:
         futures = {executor.submit(execute_bev_processing, task): task for task in sample_list_total}
 
         with tqdm(total=len(futures)) as pbar:

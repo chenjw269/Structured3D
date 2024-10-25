@@ -16,3 +16,6 @@ if __name__ == "__main__":
 
     # 读取 485142 局部地图
     cv2.imshow("Sample local map")
+
+    # 从地图上截取 485142 周围部分
+

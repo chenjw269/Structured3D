@@ -131,9 +131,9 @@ if __name__ == "__main__":
         scene_info["center_x"] = scene_center_x
         scene_center_y = (y_min_scene + y_max_scene) / 2
         scene_info["center_y"] = scene_center_y
-        scene_size_x = x_max_scene - x_min_scene + 6400 # 6400 mm → 256 pixel
+        scene_size_x = x_max_scene - x_min_scene + 12800 # 12800 mm → 512 pixel
         scene_info["size_x"] = scene_size_x
-        scene_size_y = y_max_scene - y_min_scene + 6400
+        scene_size_y = y_max_scene - y_min_scene + 12800
         scene_info["size_y"] = scene_size_y
 
         #################################

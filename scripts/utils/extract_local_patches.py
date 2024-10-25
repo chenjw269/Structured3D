@@ -10,12 +10,13 @@ def extract_local_patches(image, points, patch_size=256):
     patches = []
     
     if isinstance(points, np.ndarray):
-        points = [points.tolist()]
+        points = points.tolist()
     if isinstance(points, torch.Tensor):
-        points = [points.tolist()]
+        points = points.tolist()
 
     for point in points:
-        x, y = point
+        # x, y = point # 不交换 xy 轴
+        y, x = point # 交换 xy 轴
         # 确保不超出边界，计算局部区域的起始和结束坐标
         x_start = max(0, x - half_patch)
         y_start = max(0, y - half_patch)

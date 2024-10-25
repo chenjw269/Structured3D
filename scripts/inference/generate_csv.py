@@ -1,3 +1,6 @@
+# 20241025
+# pytorch 度量学习数据集所需的文件路径表
+
 import os
 import platform
 import numpy as np
@@ -35,7 +38,7 @@ else:
 resolution = 25  # 2.5 cm, 0.025 m / pixel
 
 # 标注数据缺失的场景
-with open(scene_annos_loss, encoding="utf-8") as f: # local
+with open(scene_annos_loss, encoding="utf-8") as f: # remote
     scene_invalid = f.readlines()
 for index, item in enumerate(scene_invalid):
     scene_invalid[index] = item.replace("\n", "")
@@ -47,14 +50,14 @@ for index, item in enumerate(scene_invalid_append):
 scene_invalid = scene_invalid + scene_invalid_append
 
 # 观测数据缺失的样本
-with open(scene_obs_err, encoding="utf-8") as f:  # local
+with open(scene_obs_err, encoding="utf-8") as f: # remote
     obs_invalid = f.readlines()
 for index, item in enumerate(obs_invalid):
     obs_invalid[index] = item.replace("\n", "")
 
 
 def generate_scene_csv(scene_index):
-
+    
     sample_pos_list = []
     sample_obs_list = []
     sample_map_list = []
@@ -69,15 +72,15 @@ def generate_scene_csv(scene_index):
     # 遍历观测数据
     obs_list = os.listdir(obs_dir)
     for obs_item in obs_list:
-
+    
         # 缺少观测值的样本作废
         if f"{scene_index},{obs_item}" in obs_invalid:
             tqdm.write(f"Jmp obs loss {scene_index} {obs_item}")
             continue
-        
+
         # 场景标注
         annos.append(scene_annos)
-        
+
         # 真实位置
         obs_item_pos = os.path.join(obs_dir, obs_item, "panorama/camera_xyz.txt")
         obs_item_pos = np.genfromtxt(obs_item_pos, delimiter=" ")[:2]
@@ -91,25 +94,25 @@ def generate_scene_csv(scene_index):
 
         # 场景地图
         sample_map_list.append(scene_map)
-        
-        # 保存到 csv 文件
-        scene_output_pth = os.path.join(output_pth, scene_index, f"metric_learning/{scene_index}.csv")
-        os.makedirs(os.path.join(output_pth, scene_index, "metric_learning"), exist_ok=True)
-        scene_df = pd.DataFrame(
-            {
-                "gt pos": sample_pos_list,
-                "local map": sample_obs_list,
-                "global map": sample_map_list,
-                "annos": annos
-            }
-        )
-        scene_df.to_csv(scene_output_pth, index=False)
 
-        return scene_index
+    # 保存到 csv 文件
+    scene_output_pth = os.path.join(output_pth, scene_index, f"inference/{scene_index}.csv")
+    os.makedirs(os.path.join(output_pth, scene_index, "inference"), exist_ok=True)
+    scene_df = pd.DataFrame(
+        {
+            "gt pos": sample_pos_list,
+            "local map": sample_obs_list,
+            "global map": sample_map_list,
+            "annos": annos
+        }
+    )
+    scene_df.to_csv(scene_output_pth, index=False)
+
+    return scene_index
 
 
 if __name__ == "__main__":
-
+    
     scene_index_list = [f"scene_{num:05}" for num in range(3500)] # 前 1000 个场景
     # scene_index_list = [f"scene_{num:05}" for num in range(100)] # 前 100 个场景
 
@@ -132,3 +135,5 @@ if __name__ == "__main__":
                     tqdm.write(f"Task {task_id} generated an exception: {e}")
 
                 pbar.update(1)  # 更新进度条
+
+
