@@ -96,7 +96,7 @@ def generate_scene_hypothesis(scene_info):
 
 if __name__ == "__main__":
     
-    scene_index = "scene_00000"
+    scene_index = "scene_02600"
     
     # 场景边界数据
     scene_info = os.path.join(data_pth, scene_index, "boundary.csv")

@@ -54,7 +54,7 @@ for index, item in enumerate(scene_invalid_append):
 scene_invalid = scene_invalid + scene_invalid_append
 
 
-def execute_semantic_mapping(scene_index):
+def execute_semantic_mapping(scene_index, mode='save'):
 
     ####################################
     # 读取数据
@@ -118,19 +118,22 @@ def execute_semantic_mapping(scene_index):
     #########################################
     # 将占用网格转为图像
     map_img = visualize_occ(map_occ, LABEL_TO_COLOR)
-    # # 可视化结果
-    # cv2.imshow("CAD Map", map_img)
-    # cv2.waitKey(0)
-    # cv2.destroyAllWindows()
-    # 结果保存路径
-    scene_output_dir = os.path.join(output_pth, scene_index)
-    os.makedirs(scene_output_dir, exist_ok=True)
-    # 占用网格 np.array
-    scene_output_pth_array = os.path.join(output_pth, scene_index, "map.npy")
-    np.save(scene_output_pth_array, map_occ)
-    # 图片 png
-    scene_output_pth_img = os.path.join(output_pth, scene_index, "map.png")
-    cv2.imwrite(scene_output_pth_img, map_img)
+
+    if mode == "show":
+        # 可视化结果
+        cv2.imshow("CAD Map", map_img)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
+    elif mode == "save":
+        # 保存结果
+        scene_output_dir = os.path.join(output_pth, scene_index)
+        os.makedirs(scene_output_dir, exist_ok=True)
+        # 占用网格 np.array
+        scene_output_pth_array = os.path.join(output_pth, scene_index, "map.npy")
+        np.save(scene_output_pth_array, map_occ)
+        # 图片 png
+        scene_output_pth_img = os.path.join(output_pth, scene_index, "map.png")
+        cv2.imwrite(scene_output_pth_img, map_img)
 
     return scene_index
 

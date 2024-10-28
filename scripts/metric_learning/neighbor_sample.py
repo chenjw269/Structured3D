@@ -6,7 +6,16 @@ import random
 
 # 采样近邻：在指定半径范围内采样随机点
 def generate_neighbor_within(position, nums, radius, p_bound):
-    """生成范围以内的随机点
+    """在指定范围内，随机采样 2d 平面上的坐标
+
+    Args:
+        position (list(int, int)): 采样范围的位置中心
+        nums (int): 采样位置的数量
+        radius (float): 采样位置的范围
+        p_bound (list((int, int), (int, int))): 采样位置的坐标边界
+
+    Returns:
+        list(int, int): 采样得到的随机位置
     """
     assert p_bound[0][0] < p_bound[0][1] # x 轴坐标范围的下界小于上界
     assert p_bound[1][0] < p_bound[1][1] # y 轴坐标范围的下界小于上界

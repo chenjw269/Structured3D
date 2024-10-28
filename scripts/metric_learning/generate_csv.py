@@ -1,56 +1,14 @@
-import os
-import platform
-import numpy as np
-import pandas as pd
-from tqdm import tqdm
-import concurrent.futures
-
 import sys
 sys.path.append(".")
 
-# 坐标转换
-from scripts.cad_mapping_v1.coord_conv import position_to_pixel
+from s3d import * # s3d 数据集信息
 
-
-# 获取系统类型
-system_type = platform.system()
-# 本地路径和服务器路径
-if system_type == 'Windows':
-    data_pth = "e:/datasets/Structure3D/Structured3D"
-    bev_pth = "e:/datasets/Structure3D_bev/Structured3D"
-    map_pth = "e:/datasets/Structure3D_map/Structured3D"
-    scene_annos_loss = "logs/scene_annos.txt"
-    scene_line_err = "logs/scene_line_err.txt"
-    scene_obs_err = "logs/scene_observation.txt"
-    output_pth = "e:/datasets/Structure3D_csv/Structured3D"
-else:
-    data_pth = "/data1/chenjiwei/S3D/zip/Structured3D"
-    bev_pth = "/data1/chenjiwei/S3D/Structure3D_bev/Structured3D"
-    map_pth = "/data1/chenjiwei/S3D/Structure3D_map/Structured3D"
-    scene_annos_loss = "../../logs/scene_annos.txt"
-    scene_line_err = "../../logs/scene_line_err.txt"
-    scene_obs_err = "../../logs/scene_observation.txt"
-    output_pth = "/data1/chenjiwei/S3D/Structure3D_csv/Structured3D"
-
-resolution = 25  # 2.5 cm, 0.025 m / pixel
-
-# 标注数据缺失的场景
-with open(scene_annos_loss, encoding="utf-8") as f: # local
-    scene_invalid = f.readlines()
-for index, item in enumerate(scene_invalid):
-    scene_invalid[index] = item.replace("\n", "")
-# 边线错误的场景
-with open(scene_line_err, encoding="utf-8") as f:
-    scene_invalid_append = f.readlines()
-for index, item in enumerate(scene_invalid_append):
-    scene_invalid_append[index] = item.replace("\n", "")
-scene_invalid = scene_invalid + scene_invalid_append
-
-# 观测数据缺失的样本
-with open(scene_obs_err, encoding="utf-8") as f:  # local
-    obs_invalid = f.readlines()
-for index, item in enumerate(obs_invalid):
-    obs_invalid[index] = item.replace("\n", "")
+import os # 拼接文件路径
+import numpy as np # 读取样本位置
+import pandas as pd # 数据目录保存为表
+from tqdm import tqdm # 进度条
+import concurrent.futures # 多进程
+from scripts.cad_mapping_v1.coord_conv import position_to_pixel # 坐标转换
 
 
 def generate_scene_csv(scene_index):
@@ -58,60 +16,61 @@ def generate_scene_csv(scene_index):
     sample_pos_list = []
     sample_obs_list = []
     sample_map_list = []
-    annos = []
+    bound_list = []
 
-    bev_dir = os.path.join(bev_pth, scene_index, "2D_rendering")
-    obs_dir = os.path.join(data_pth, scene_index, "2D_rendering")
-    scene_map = os.path.join(map_pth, scene_index, "map.npy")
-    scene_annos = os.path.join(data_pth, scene_index, "boundary.csv")
-    scene_annos_df = pd.read_csv(scene_annos)
+    bev_dir = os.path.join(s3d_bev_pth, scene_index, "2D_rendering")
+    obs_dir = os.path.join(s3d_data_pth, scene_index, "2D_rendering")
+    scene_map = os.path.join(s3d_map_pth, scene_index, "map.npy")
+
+    scene_bound = os.path.join(s3d_data_pth, scene_index, "boundary.csv")
+    scene_bound_df = pd.read_csv(scene_bound)
 
     # 遍历观测数据
     obs_list = os.listdir(obs_dir)
     for obs_item in obs_list:
 
         # 缺少观测值的样本作废
-        if f"{scene_index},{obs_item}" in obs_invalid:
+        if f"{scene_index},{obs_item}" in sample_invalid:
             tqdm.write(f"Jmp obs loss {scene_index} {obs_item}")
             continue
         
         # 场景标注
-        annos.append(scene_annos)
-        
+        bound_list.append(scene_bound)
+
         # 真实位置
         obs_item_pos = os.path.join(obs_dir, obs_item, "panorama/camera_xyz.txt")
         obs_item_pos = np.genfromtxt(obs_item_pos, delimiter=" ")[:2]
-        # 坐标变换
-        obs_item_pos = position_to_pixel(obs_item_pos, resolution, scene_annos_df).tolist()
-        sample_pos_list.append(obs_item_pos)
+        # 坐标变换（csv 中不能存 np.array，只能存 list）
+        obs_item_pos = position_to_pixel(obs_item_pos, resolution, scene_bound_df)
+        sample_pos_list.append(obs_item_pos.tolist())
 
-        # 局部地图
+        # 观测数据 BEV
         obs_item_bev = os.path.join(bev_dir, obs_item, "panorama/full/bev.npy")
         sample_obs_list.append(obs_item_bev)
 
         # 场景地图
         sample_map_list.append(scene_map)
-        
-        # 保存到 csv 文件
-        scene_output_pth = os.path.join(output_pth, scene_index, f"metric_learning/{scene_index}.csv")
-        os.makedirs(os.path.join(output_pth, scene_index, "metric_learning"), exist_ok=True)
-        scene_df = pd.DataFrame(
-            {
-                "gt pos": sample_pos_list,
-                "local map": sample_obs_list,
-                "global map": sample_map_list,
-                "annos": annos
-            }
-        )
-        scene_df.to_csv(scene_output_pth, index=False)
 
-        return scene_index
+    # 保存到 csv 文件
+    scene_output_pth = os.path.join(s3d_csv_pth, scene_index, f"metric_learning/{scene_index}.csv")
+    os.makedirs(os.path.join(s3d_csv_pth, scene_index, "metric_learning"), exist_ok=True)
+    scene_df = pd.DataFrame(
+        {
+            "gt pos": sample_pos_list,
+            "local map": sample_obs_list,
+            "global map": sample_map_list,
+            "annos": bound_list
+        }
+    )
+    scene_df.to_csv(scene_output_pth, index=False)
+
+    return scene_index
 
 
 if __name__ == "__main__":
 
-    scene_index_list = [f"scene_{num:05}" for num in range(3500)] # 前 1000 个场景
-    # scene_index_list = [f"scene_{num:05}" for num in range(100)] # 前 100 个场景
+    # Structured3D 包括 3500 个场景
+    scene_index_list = [f"scene_{num:05}" for num in range(3500)]
 
     for scene_index in tqdm(scene_index_list):
         # 缺少标注的场景作废
