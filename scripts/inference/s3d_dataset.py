@@ -41,9 +41,9 @@ class S3DInference(Dataset):
         
         # 当前场景标注
         scene_annos = self.data['annos'][index]
-        scene_annos_df = pd.read_csv(scene_annos)
+        scene_annos = pd.read_csv(scene_annos)
         # 从场景地图上采样位置假设
-        pos_hypothesis = generate_scene_hypothesis(scene_annos_df)
+        pos_hypothesis = generate_scene_hypothesis(scene_annos)
 
         # 获取位置假设周围的观测假设
         obs_hypothesis = extract_local_patches(global_map, pos_hypothesis)

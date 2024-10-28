@@ -23,11 +23,13 @@ def merge_csv(scene_list):
 ##########################################
 # 训练集
 train_list = [f"scene_{num:05}" for num in range(3000)]
+# 排除数据缺失的场景
 for scene_index in tqdm(train_list):
     # 缺少标注的场景作废
     if scene_index in scene_invalid:
         train_list.remove(scene_index)
 print("Invalid scenes removed from train list")
+# 合并数据集的 csv 文件
 train_df = merge_csv(train_list)
 output_csv_train = os.path.join(s3d_csv_pth, f"metric_learning_train.csv")
 train_df.to_csv(output_csv_train, index=False)
