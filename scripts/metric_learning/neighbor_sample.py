@@ -4,6 +4,10 @@ import math
 import random
 
 
+##########################################
+# 随机生成相邻 / 不相邻的位置
+##########################################
+
 # 采样近邻：在指定半径范围内采样随机点
 def generate_neighbor_within(position, nums, radius, p_bound):
     """在指定范围内，随机采样 2d 平面上的坐标
@@ -105,3 +109,61 @@ def generate_neighbor_outside(position, nums, radius, p_bound=(0,800)):
     
         if len(random_points) == nums:
             return random_points
+
+##########################################
+# 随机生成相邻 / 不相邻的朝向
+##########################################
+
+def generate_orientation_within(orientation, nums, bias):
+    """在指定范围内，随机采样 1d 朝向
+
+    Args:
+        orientation (float): 真实朝向
+        nums (int): 采样朝向的数量
+        bias (float): 采样朝向的范围
+    """
+    random_angles = []
+    
+    while True:
+        # 随机生成角度范围内的随机角度
+        o = random.uniform(-bias, bias)
+        
+        random_angles.append(orientation + o)
+        
+        if len(random_angles) == nums:
+            return random_angles
+
+def generate_orientation_outside(orientation, nums, bias):
+    
+    random_angles = []
+    
+    while True:
+        # 随机生成角度范围外的随机角度
+        o = random.uniform(bias, 360 - bias)
+        
+        random_angles.append(orientation + o)
+        
+        if len(random_angles) == nums:
+            return random_angles
+
+############################################
+# 随机生成正负样例位姿
+############################################
+
+def generate_pn_pose(pos_config, neg_config):
+    
+    # 随机生成位置接近，角度接近的位姿
+    
+    # 随机生成位置接近，角度不接近的位姿
+    
+    # 随机生成位置不接近，角度随机的位姿
+    
+
+    pose = {
+        "positive nums": None,
+        "positive pose": None,
+        "negative nums": None,
+        "negative pose": None
+    }
+
+    return pose

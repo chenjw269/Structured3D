@@ -1,11 +1,14 @@
 # 20241018
 # 根据语义标签 → 颜色的映射，将 2d 占用网格可视化
+import sys
+sys.path.append(".")
+from assets.semantic2label import LABEL_TO_COLOR
 
 import numpy as np
 from PIL import Image
 
 
-def visualize_occ(semantic_voxel, semantic_color_dict):
+def visualize_occ(semantic_voxel, semantic_color_dict=LABEL_TO_COLOR):
     
     # 创建占用网格
     semantic_voxel_size = (semantic_voxel.shape[0], semantic_voxel.shape[1])

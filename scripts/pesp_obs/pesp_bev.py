@@ -46,6 +46,8 @@ def generate_ellipse_mask(image, angle, fov):
 
     # 图像形状
     height, width = image.shape[0], image.shape[1] # 256,256
+    # 创建掩码
+    mask = np.zeros((height, width))
     # 扇形的中心，也就是图像的中心
     center = (int(height/2), int(width/2))
     # 扇形 x y 轴的半径，为图像对角线长度的一半
@@ -57,9 +59,9 @@ def generate_ellipse_mask(image, angle, fov):
     start_angle = angle - fov/2
     end_angle = angle + fov/2
     # 绘制扇形
-    image = cv2.ellipse(image, center, radius, 0, start_angle, end_angle, 1, -1)
+    mask = cv2.ellipse(mask, center, radius, 0, start_angle, end_angle, 1, -1)
     
-    return image
+    return mask
 
 
 def generate_rotation(image, angle):

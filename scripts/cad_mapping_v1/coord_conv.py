@@ -31,7 +31,7 @@ def position_to_pixel(ori_pos, resolution, scene_boundary):
     # # 交换 xy 坐标
     # tgt_pos = np.array([tgt_pos[1], tgt_pos[0]])
 
-    return tgt_pos
+    return np.array(tgt_pos)
 
 def position_to_pixel_mapping(ori_pos, resolution, scene_boundary):
     """对比样本坐标的坐标转换过程，一方面是要进行批量转换，一方面是不用交换 xy 轴
