@@ -14,8 +14,8 @@ def parse_camera_info(camera_info, height=720, width=1280):
     up_direction = normalize(camera_info[6:9])
     
     W = view_direction
-    U = np.cross(W, up_direction)
-    V = np.cross(W, U)
+    U = np.cross(W, up_direction) # 视线方向和重力方向叉积，右方向
+    V = np.cross(W, U) # 视线方向和右方向叉积，纠正后的重力方向
 
     # 返回值 1：朝向
     rot = np.vstack((U, V, W))

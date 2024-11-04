@@ -3,15 +3,89 @@ sys.path.append(".")
 
 import os
 import cv2
+import time
 import open3d as o3d
 import numpy as np
 from s3d import *
 from scripts.bev.points_aug import * # 点云稠密化方法
 from assets.semantic2label import * # 语义-颜色对应关系
+from scripts.utils.read_camera_pose import rotation_matrix_gravity
 
+
+def parse_camera_rpy(camera_info):
+    
+    view_direction = camera_info[3:6]
+    up_direction = camera_info[6:9]
+    
+    # 1. 归一化视线方向和上方向
+    view_direction = view_direction / np.linalg.norm(view_direction)
+    up_direction = up_direction / np.linalg.norm(up_direction)
+
+    # 2. 计算 yaw 角
+    yaw = np.arctan2(view_direction[0], view_direction[2])
+
+    # 3. 计算 pitch 角
+    pitch = np.arcsin(-view_direction[1])  # 视线方向在 y 轴的分量
+
+    # 4. 计算 roll 角
+    # 先计算右方向
+    right_direction = np.cross(up_direction, view_direction)
+    right_direction = right_direction / np.linalg.norm(right_direction)
+
+    # 重新计算上方向以确保正交性
+    up_direction = np.cross(view_direction, right_direction)
+
+    # 计算 roll 角
+    roll = np.arctan2(up_direction[2], up_direction[1])  # 上方向在 y-z 平面的分量
+
+    # 输出角度（将弧度转换为角度）
+    yaw_deg = np.degrees(yaw)
+    pitch_deg = np.degrees(pitch)
+    roll_deg = np.degrees(roll)
+
+    return roll_deg, pitch_deg, yaw_deg
+
+def parse_camera_direction(camera_info):
+    
+    view_direction = camera_info[3:6]
+    up_direction = camera_info[6:9]
+    
+    # 1. 归一化视线方向和上方向
+    view_direction = view_direction / np.linalg.norm(view_direction)
+    up_direction = up_direction / np.linalg.norm(up_direction)
+
+    # 2. 计算右方向（视线方向和上方向的叉积）
+    right_direction = np.cross(up_direction, view_direction)
+    right_direction = right_direction / np.linalg.norm(right_direction)
+
+    # 3. 重新计算上方向，保证正交
+    up_direction = np.cross(view_direction, right_direction)
+    
+    # #####################################
+    # # 消除 roll pitch yaw 旋转
+    # #####################################
+    # rotation_matrix = np.array([
+    #     right_direction,
+    #     up_direction,
+    #     -view_direction  # 注意这里取负号，使得z轴朝外
+    # ]).T
+
+    #####################################
+    # 消除 roll pitch 旋转
+    #####################################    
+    yaw_angle = np.arctan2(view_direction[0], view_direction[2]) + np.pi/2
+
+    # 5. 构建 yaw 旋转矩阵
+    rotation_matrix = np.array([
+        [np.cos(yaw_angle), 0, np.sin(yaw_angle)],
+        [0,                 1, 0],
+        [-np.sin(yaw_angle), 0, np.cos(yaw_angle)]
+    ])
+
+    return rotation_matrix
 
 def parse_camera_intrinsic(camera_info, height=720, width=1280):
-    """从图像的形状何相机视野计算相机的内参
+    """从图像的形状和相机视野计算相机的内参
 
     Args:
         camera_info (np.array): 相机的视野等信息
@@ -71,6 +145,8 @@ def depth_pesp_proj(depth, ins):
 
 def generate_pesp_bev(depth, semantic, camera_pose):
 
+    start_time = time.time()
+
     #############################################
     # 反投影：将深度图反投影为点云
     #############################################
@@ -84,12 +160,24 @@ def generate_pesp_bev(depth, semantic, camera_pose):
     ##############################################
     # 对齐
     ##############################################
+    view_direction = camera_pose[3:6]
+    # view_direction = np.array([0, 1, 0])
+
+    gravity_direction = camera_pose[6:9]
+    rm_gravity = rotation_matrix_gravity(view_direction, gravity_direction)
+    depth_pc = np.dot(depth_pc, rm_gravity)
     # 旋转矩阵
     R = np.array([[1, 0, 0],   # X 轴 -> X 轴
-                [0, 0, -1],   # Y 轴 -> -Z 轴
-                [0, 1, 0]])  # Z 轴 -> Y 轴
+                [0, -1, 0],   # Y 轴 -> -Y 轴
+                [0, 0, 1]])  # Z 轴 -> Z 轴
     # 调整点云坐标系为：z 轴竖直向上，x 轴水平向右，y 轴垂直向里
     depth_pc = np.dot(depth_pc, R.T)
+
+    end_time = time.time()
+    execution_time = end_time - start_time
+    print(f"Processing depth pc {execution_time}")
+
+    start_time = time.time()
 
     ##############################################
     # 栅格化：遍历不同语义，栅格化点云，填充网格
@@ -138,6 +226,10 @@ def generate_pesp_bev(depth, semantic, camera_pose):
             if 0 <= voxel_index_0 < semantic_voxel_size \
                 and 0 <= voxel_index_1 < semantic_voxel_size:
                 semantic_voxel[voxel_index_1][voxel_index_0] = SEMANTIC_TO_LABEL[semantic_type]
+
+    end_time = time.time()
+    execution_time = end_time - start_time
+    print(f"Processing occ {execution_time}")
 
     return semantic_voxel
 

@@ -6,6 +6,7 @@ import copy
 from s3d import *
 import numpy as np
 from scripts.utils.read_sample_info import read_sample_info # 读取样本位姿
+from scripts.utils.view_range_utils import generate_ellipse_mask
 from scripts.virtual_obs.pesp_vobs import * # 虚拟单视角观测
 from scripts.utils.visualize_occ import * # 可视化占用网格
 
@@ -24,6 +25,7 @@ if __name__ == "__main__":
 
     # 样本位姿
     sample_pose = sample_info["sample pose"]
+    print(sample_pose)
 
     fov = 80
     

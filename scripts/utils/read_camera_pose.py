@@ -25,9 +25,39 @@ def compute_euler_angles(direction):
     yaw = np.degrees(yaw)
     pitch = np.degrees(pitch)
     roll = np.degrees(roll)
+    
+    print(f"Direction {direction}")
+    print(f"Roll-pitch-yaw {roll} {pitch} {yaw}")
 
     return roll, pitch, yaw
 
+
+def rotation_matrix_gravity(direction, up):
+    # 归一化方向向量
+    direction = direction / np.linalg.norm(direction)
+    print(f"Original direction {direction}")
+
+    # 归一化重力方向向量
+    up = up / np.linalg.norm(up)
+    print(f"Original gravity {up}")
+
+    # 计算右向量 (right vector)
+    right = np.cross(direction, up)
+    right /= np.linalg.norm(right)
+    
+    # # 重新计算相机朝向
+    # corrected_direction = -np.cross(right, up)
+    # print(f"Corrected direction {corrected_direction}")
+    # 重新计算
+    corrected_up = -np.cross(direction, right)
+    print(f"Corrected gravity {corrected_up}")
+
+    # 创建旋转矩阵
+    # rotation_matrix = np.array([right, up, corrected_direction])
+    rotation_matrix = np.array([right, corrected_up, direction])
+    
+    
+    return rotation_matrix
 
 def compute_euler_angles_wgravity(direction, up):
     """在重力方向校正下，计算相机位姿中的朝向角
@@ -42,6 +72,7 @@ def compute_euler_angles_wgravity(direction, up):
     
     # 归一化方向向量
     direction = direction / np.linalg.norm(direction)
+    print(direction)
 
     # 归一化重力方向向量
     up = up / np.linalg.norm(up)
@@ -52,9 +83,11 @@ def compute_euler_angles_wgravity(direction, up):
     
     # 重新计算相机朝向
     corrected_direction = np.cross(right, up)
+    # print(corrected_direction)
 
     # 创建旋转矩阵
     rotation_matrix = np.array([right, corrected_direction, up])
+    # print(rotation_matrix)
 
     # 提取欧拉角 (yaw, pitch, roll)
     yaw = np.arctan2(rotation_matrix[1, 0], rotation_matrix[0, 0])
@@ -65,6 +98,9 @@ def compute_euler_angles_wgravity(direction, up):
     yaw = np.degrees(yaw) # 绕 Y 轴的偏航角
     pitch = np.degrees(pitch) # 绕 X 轴的俯仰角
     roll = np.degrees(roll) # 绕 Z 轴的滚转角
+
+    print(f"Direction {corrected_direction}")
+    print(f"Roll-pitch-yaw {roll} {pitch} {yaw}")
 
     return roll, pitch, yaw
 
