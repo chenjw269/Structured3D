@@ -64,7 +64,7 @@ if __name__ == "__main__":
     scene_index_list = [f"scene_{num:05}" for num in range(3500)]
 
     #########################################
-    # 统计所有场景下的所有样本
+    # 标注数据缺失的场景
     #########################################
     sample_list_total = []
     for scene_index in tqdm(scene_index_list):

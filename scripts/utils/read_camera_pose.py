@@ -1,5 +1,5 @@
 # 读取相机位姿
-
+import math
 import numpy as np
 
 
@@ -49,10 +49,10 @@ def rotation_matrix_gravity(direction, up):
     # corrected_direction = -np.cross(right, up)
     # print(f"Corrected direction {corrected_direction}")
     # 重新计算
-    corrected_up = -np.cross(direction, right)
+    corrected_up = -np.cross(direction, right) # 校正后的重力方向向量（竖直向上）
     print(f"Corrected gravity {corrected_up}")
 
-    # 创建旋转矩阵
+    # 创建旋转矩阵（将原本的重力方向对准到新的重力方向）
     # rotation_matrix = np.array([right, up, corrected_direction])
     rotation_matrix = np.array([right, corrected_up, direction])
     
@@ -104,11 +104,31 @@ def compute_euler_angles_wgravity(direction, up):
 
     return roll, pitch, yaw
 
-def read_camera_pose(pose, mode="gravity"):
+def compute_yaw_from_view(view_direction):
+    """从相机朝向向量计算 yaw 角
+
+    Args:
+        view_direction (np.array): 相机朝向方向的单位向量
+
+    Returns:
+        float: 相机朝向的 yaw 角
+    """
+    tx = view_direction[0]
+    ty = view_direction[1]
+
+    # 计算 yaw 角（单位：弧度）
+    yaw = math.atan2(tx, ty)
+
+    # 如果需要转换为角度：
+    yaw_deg = math.degrees(yaw)
+    
+    return yaw_deg
+
+def read_camera_pose(pose, mode="raw"):
 
     assert mode in ["raw", "gravity"], "Error: mode should be either 'raw' or 'gravity'."
 
-    pose = np.loadtxt(pose)
+    # pose = np.loadtxt(pose)
 
     transistion = pose[:2] # 2d 位置
 
@@ -117,11 +137,13 @@ def read_camera_pose(pose, mode="gravity"):
     
     # 1. 直接计算朝向
     if mode == "raw":
-        roll, pitch, yaw = compute_euler_angles(t)
-        yaw = - yaw
+        yaw = compute_yaw_from_view(t)
     # 2. 根据重力方向调整计算朝向
     elif mode == "gravity":
         roll, pitch, yaw = compute_euler_angles_wgravity(t, u)
+    else:
+        yaw = None
+        print("Unhandled mode")
 
     pose = np.append(transistion, yaw)
     

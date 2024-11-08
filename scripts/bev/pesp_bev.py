@@ -161,11 +161,10 @@ def generate_pesp_bev(depth, semantic, camera_pose):
     # 对齐
     ##############################################
     view_direction = camera_pose[3:6]
-    # view_direction = np.array([0, 1, 0])
-
     gravity_direction = camera_pose[6:9]
     rm_gravity = rotation_matrix_gravity(view_direction, gravity_direction)
     depth_pc = np.dot(depth_pc, rm_gravity)
+
     # 旋转矩阵
     R = np.array([[1, 0, 0],   # X 轴 -> X 轴
                 [0, -1, 0],   # Y 轴 -> -Y 轴
