@@ -15,18 +15,21 @@ def position_to_pixel(ori_pos, resolution, scene_boundary):
     if not isinstance(tgt_pos, np.ndarray):
         tgt_pos = np.array(tgt_pos)
     
-    # normalization，将坐标中心修改为原点
+    # 1. 地图的原点（0，0）为坐标中心
     scene_center = np.array([scene_boundary['center_x'].item(), scene_boundary['center_y'].item()])
     tgt_pos = tgt_pos - scene_center
-    # 根据比例尺进行换算，从 mm 转换成 pixel
+
+    # 2. 坐标除以分辨率，从 mm 转换为 pixel
     tgt_pos = (tgt_pos / resolution).astype(int)
-    # 根据地图尺寸进行偏移
+
+    # 3. 根据地图尺寸，平移像素坐标
     scene_size = np.array([
         scene_boundary['size_x'].item() / resolution,
         scene_boundary['size_y'].item() / resolution
     ])
     tgt_pos = (tgt_pos + scene_size / 2).astype(int)
-    # 上下翻转
+
+    # 4. 上下翻转 y 轴
     tgt_pos[1] = scene_size[1] - tgt_pos[1]
     # # 交换 xy 坐标
     # tgt_pos = np.array([tgt_pos[1], tgt_pos[0]])

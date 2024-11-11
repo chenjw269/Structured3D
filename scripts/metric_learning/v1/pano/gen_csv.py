@@ -15,27 +15,32 @@ def generate_scene_csv(scene_index):
 
     sample_pos_list = []
     sample_obs_list = []
-    sample_map_list = []
-    bound_list = []
+    scene_map_list = []
+    scene_bound_list = []
 
-    bev_dir = os.path.join(s3d_bev_pth, scene_index, "2D_rendering")
-    obs_dir = os.path.join(s3d_data_pth, scene_index, "2D_rendering")
+    # 场景地图
     scene_map = os.path.join(s3d_map_pth, scene_index, "map.npy")
+    # 场景边界
+    scene_bound = pd.read_csv(os.path.join(s3d_data_pth, scene_index, "boundary.csv"))
 
-    scene_bound = os.path.join(s3d_data_pth, scene_index, "boundary.csv")
-    scene_bound_df = pd.read_csv(scene_bound)
+    # bev 观测
+    bev_dir = os.path.join(s3d_bev_pth, scene_index, "2D_rendering")
+    # 位姿真值
+    obs_dir = os.path.join(s3d_data_pth, scene_index, "2D_rendering")
 
     # 遍历观测数据
     obs_list = os.listdir(obs_dir)
     for obs_item in obs_list:
 
-        # 缺少观测值的样本作废
-        if f"{scene_index},{obs_item}" in sample_invalid:
-            tqdm.write(f"Jmp obs loss {scene_index} {obs_item}")
-            continue
+        # # TODO:缺少观测值的样本作废
+        # if f"{scene_index},{obs_item}" in sample_invalid:
+        #     tqdm.write(f"Jmp obs loss {scene_index} {obs_item}")
+        #     continue
+
+        # csv 每一行存储 bev 路径列表，cad 地图路径，位姿真值列表
         
         # 场景标注
-        bound_list.append(scene_bound)
+        scene_bound_list.append(scene_bound)
 
         # 真实位置
         obs_item_pos = os.path.join(obs_dir, obs_item, "panorama/camera_xyz.txt")

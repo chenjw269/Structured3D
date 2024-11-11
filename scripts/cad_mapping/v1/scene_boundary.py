@@ -128,7 +128,7 @@ def execute_scene_boundary(scene_index):
     #################################
     # 保存场景的边界信息
     #################################
-    output_pth = os.path.join(s3d_data_pth, scene_index, "boundary.csv")
+    output_pth = os.path.join(s3d_annos_pth, scene_index, "boundary.csv")
     scene_info_df = pd.DataFrame(scene_info)
     scene_info_df.to_csv(output_pth, index=False)
 

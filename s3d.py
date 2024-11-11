@@ -10,6 +10,8 @@ if system_type == 'Windows':
     s3d_data_pth = "d:/dataset/S3D/Structured3D"
     # s3d_bev_pth = "e:/datasets/Structure3D_bev/Structured3D"
     s3d_bev_pth = "d:/dataset/S3D/Structured3D_bev/"
+
+    # cad 地图
     s3d_map_pth = "e:/datasets/Structure3D_map/Structured3D"
     s3d_annos_pth = "e:/datasets/Structure3D/Structured3D"
     
@@ -21,11 +23,15 @@ if system_type == 'Windows':
     s3d_pano_obs_err = "logs/scene_observation.txt" # 全景图
     s3d_pesp_obs_err = "logs/pesp_obs_loss.txt" # 单视角视图
 
+    # 数据集目录
     s3d_csv_pth = "e:/datasets/Structure3D_csv/Structured3D"
 else:
     s3d_data_pth = "/data1/chenjiwei/S3D/zip/Structured3D"
     s3d_bev_pth = "/data1/chenjiwei/S3D/Structure3D_bev/Structured3D"
+
+    # cad 地图
     s3d_map_pth = "/data1/chenjiwei/S3D/Structure3D_map/Structured3D"
+    s3d_annos_pth = "e:/datasets/Structure3D/Structured3D"
 
     # 场景标注缺失
     s3d_scene_annos_loss = "../../logs/scene_annos.txt"
@@ -34,7 +40,8 @@ else:
     # 观测数据缺失
     s3d_pano_obs_err = "../../logs/scene_observation.txt" # 全景图
     s3d_pesp_obs_err = "../../logs/pesp_obs_loss.txt" # 单视角视图
-    
+
+    # 数据集目录
     s3d_csv_pth = "/data1/chenjiwei/S3D/Structure3D_csv/Structured3D"
 
 resolution = 25

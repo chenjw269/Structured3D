@@ -14,7 +14,7 @@ import sys
 sys.path.append(".")
 
 # 坐标转换
-from scripts.cad_mapping_v1.coord_conv import position_to_pixel_mapping
+from scripts.cad_mapping.v1.coord_conv import position_to_pixel_mapping
 # 读取地图
 from scripts.utils.read_area_wall import read_area_wall
 from scripts.utils.read_obj import read_obj
