@@ -12,7 +12,7 @@ def merge_csv(scene_list):
 
     total_df = pd.DataFrame()
     for scene_item in tqdm(scene_list):
-        scene_item = os.path.join(s3d_csv_pth, scene_item, f"metric_learning/{scene_item}.csv")
+        scene_item = os.path.join(s3d_csv_pth, scene_item, f"matching/{scene_item}.csv")
         scene_item_df = pd.read_csv(scene_item)
         total_df = pd.concat((total_df, scene_item_df))
 
@@ -31,7 +31,7 @@ for scene_index in tqdm(train_list):
 print("Invalid scenes removed from train list")
 # 合并数据集的 csv 文件
 train_df = merge_csv(train_list)
-output_csv_train = os.path.join(s3d_csv_pth, f"metric_learning_train.csv")
+output_csv_train = os.path.join(s3d_csv_pth, f"matching_train.csv")
 train_df.to_csv(output_csv_train, index=False)
 print(f"Output train csv to {output_csv_train}")
 # 验证集
@@ -42,7 +42,7 @@ for scene_index in tqdm(val_list):
         val_list.remove(scene_index)
 print("Invalid scenes removed from val list")
 val_df = merge_csv(val_list)
-output_csv_val = os.path.join(s3d_csv_pth, f"metric_learning_val.csv")
+output_csv_val = os.path.join(s3d_csv_pth, f"matching_val.csv")
 val_df.to_csv(output_csv_val, index=False)
 print(f"Output val csv to {output_csv_val}")
 # 测试集
@@ -53,6 +53,6 @@ for scene_index in tqdm(test_list):
         test_list.remove(scene_index)
 print("Invalid scenes removed from test list")
 test_df = merge_csv(test_list)
-output_csv_test = os.path.join(s3d_csv_pth, f"metric_learning_test.csv")
+output_csv_test = os.path.join(s3d_csv_pth, f"matching_test.csv")
 test_df.to_csv(output_csv_test, index=False)
 print(f"Output test csv to {output_csv_test}")

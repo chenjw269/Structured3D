@@ -17,9 +17,9 @@ else:
     s3d_data_pth = "/data1/chenjiwei/S3D/zip/Structured3D"
     s3d_bev_pth = "/data1/chenjiwei/S3D/Structure3D_bev/Structured3D"
     s3d_map_pth = "/data1/chenjiwei/S3D/Structure3D_map/Structured3D"
-    s3d_scene_annos_loss = "../../logs/scene_annos.txt"
-    s3d_scene_line_err = "../../logs/scene_line_err.txt"
-    s3d_scene_obs_err = "../../logs/scene_observation.txt"
+    s3d_scene_annos_loss = "/home/chenjiwei/Workspace/Structured3D/logs/scene_annos.txt"
+    s3d_scene_line_err = "/home/chenjiwei/Workspace/Structured3D/logs/scene_line_err.txt"
+    s3d_scene_obs_err = "/home/chenjiwei/Workspace/Structured3D/logs/scene_observation.txt"
     s3d_csv_pth = "/data1/chenjiwei/S3D/Structure3D_csv/Structured3D"
 
 resolution = 25

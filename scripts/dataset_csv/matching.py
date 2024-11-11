@@ -1,18 +1,18 @@
 import sys
+
 sys.path.append(".")
 
-from s3d import * # s3d 数据集信息
+from s3d import *  # s3d 数据集信息
 
-import os # 拼接文件路径
-import numpy as np # 读取样本位置
-import pandas as pd # 数据目录保存为表
-from tqdm import tqdm # 进度条
-import concurrent.futures # 多进程
-from scripts.cad_mapping_v1.coord_conv import position_to_pixel # 坐标转换
+import os  # 拼接文件路径
+import numpy as np  # 读取样本位置
+import pandas as pd  # 数据目录保存为表
+from tqdm import tqdm  # 进度条
+import concurrent.futures  # 多进程
+from scripts.cad_mapping_v1.coord_conv import position_to_pixel  # 坐标转换
 
 
 def generate_scene_csv(scene_index):
-
     sample_pos_list = []
     sample_obs_list = []
     sample_map_list = []
@@ -33,7 +33,7 @@ def generate_scene_csv(scene_index):
         if f"{scene_index},{obs_item}" in sample_invalid:
             tqdm.write(f"Jmp obs loss {scene_index} {obs_item}")
             continue
-        
+
         # 场景标注
         bound_list.append(scene_bound)
 
@@ -52,8 +52,8 @@ def generate_scene_csv(scene_index):
         sample_map_list.append(scene_map)
 
     # 保存到 csv 文件
-    scene_output_pth = os.path.join(s3d_csv_pth, scene_index, f"metric_learning/{scene_index}.csv")
-    os.makedirs(os.path.join(s3d_csv_pth, scene_index, "metric_learning"), exist_ok=True)
+    scene_output_pth = os.path.join(s3d_csv_pth, scene_index, f"matching/{scene_index}.csv")
+    os.makedirs(os.path.join(s3d_csv_pth, scene_index, "matching"), exist_ok=True)
     scene_df = pd.DataFrame(
         {
             "gt pos": sample_pos_list,
