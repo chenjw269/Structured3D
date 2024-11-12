@@ -1,7 +1,7 @@
 # 20241017
 # 遍历下载链接进行下载
 import sys
-sys.path.append('../')
+sys.path.append('.')
 
 from s3d import *
 
@@ -54,7 +54,7 @@ if not os.path.exists(save_pth):
 #     download_file(link, file_path)
 
 # 下载Perspective (full)压缩包
-for link in perspective_full_links:
+for link in perspective_full_links[13:]:
     file_name = link.split('/')[-1]
     file_path = os.path.join(save_pth, file_name)
     download_file(link, file_path)
