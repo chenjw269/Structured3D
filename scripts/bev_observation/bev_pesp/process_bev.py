@@ -6,11 +6,9 @@ import time
 import numpy as np
 import open3d as o3d
 from tqdm import tqdm
-from scripts.bev_pesp.projection import parse_camera_intrinsic # 计算相机内参
-from scripts.bev_pesp.projection import depth_pesp_proj # 深度图投影到点云
-from scripts.bev_pesp.projection import gravity_align_rotation # 重力方向对齐矩阵
-from scripts.bev_pesp.projection import gravity_align_yaw # 重力方向对齐朝向
-from scripts.bev.points_aug import * # 点云稠密化方法
+from scripts.bev_observation.bev_pesp.projection import parse_camera_intrinsic # 计算相机内参
+from scripts.bev_observation.bev_pesp.projection import depth_pesp_proj # 深度图投影到点云
+from scripts.bev_observation.points_aug import * # 点云稠密化方法
 from assets.semantic2label import * # 语义-颜色对应关系
 
 

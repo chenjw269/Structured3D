@@ -7,7 +7,7 @@ import numpy as np
 from s3d import *
 from tqdm import tqdm
 import concurrent.futures
-from scripts.bev_pesp.process_bev import generate_bev # 计算单视角 bev
+from scripts.bev_observation.bev_pesp.process_bev import generate_bev # 计算单视角 bev
 from scripts.utils.visualize_occ import * # 可视化占用网格
 
 
@@ -44,7 +44,7 @@ if __name__ == "__main__":
     # # Structured3D 包括 3500 个场景
     # scene_index_list = [f"scene_{num:05}" for num in range(3500)]
     # 取前 100 个场景
-    scene_index_list = [f"scene_{num:05}" for num in range(100)]
+    scene_index_list = [f"scene_{num:05}" for num in range(400, 800)]
     
     # 去掉标注数据缺失的场景
     for scene_index in tqdm(scene_index_list):

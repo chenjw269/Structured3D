@@ -11,7 +11,7 @@ import numpy as np
 import pandas as pd
 
 from scripts.utils.read_camera_pose import read_camera_pose # 读取样本位姿
-from scripts.cad_mapping_v1.coord_conv import position_to_pixel # 坐标转换
+from scripts.cad_mapping.v1.coord_conv import position_to_pixel # 坐标转换
 
 from scripts.virtual_obs.pesp_vobs import virtual_pesp_viewrect # 虚拟视野矩形
 from scripts.virtual_obs.pesp_vobs import virtual_pesp_obs # 虚拟观测
