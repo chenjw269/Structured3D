@@ -8,13 +8,14 @@ from s3d import *
 from tqdm import tqdm
 import concurrent.futures
 from scripts.bev_observation.bev_pesp.process_bev import generate_bev # 计算单视角 bev
+from scripts.bev_observation.bev_pesp.process_bev import generate_bev # 计算单视角 bev
 from scripts.utils.visualize_occ import * # 可视化占用网格
 
 
 def execute_pesp_bev(task):
     
     # 数据目录
-    sample_data_pth = os.path.join(s3d_data_pth, task)
+    sample_data_pth = os.path.join(s3d_pesp_data_pth, task)
     # 深度图
     depth = os.path.join(sample_data_pth, "depth.png")
     depth = cv2.imread(depth, cv2.IMREAD_UNCHANGED)
@@ -53,7 +54,7 @@ if __name__ == "__main__":
     print("Invalid scenes removed")
 
     # 观测数据缺失的样本
-    with open("logs/pesp_obs_loss.txt", encoding="utf-8") as f:
+    with open(s3d_pesp_obs_err, encoding="utf-8") as f:
         obs_loss_list = f.readlines()
 
     ###########################################
@@ -64,7 +65,7 @@ if __name__ == "__main__":
     # 遍历场景
     for scene_index in scene_index_list:
         # 场景数据路径
-        scene_data_dir = os.path.join(s3d_data_pth, scene_index, "2D_rendering")
+        scene_data_dir = os.path.join(s3d_pesp_data_pth, scene_index, "2D_rendering")
         sample_index_list = os.listdir(scene_data_dir)
 
         # 遍历样本
@@ -89,7 +90,7 @@ if __name__ == "__main__":
     # 计算单视角 bev
     ###########################################
     # 用所有样本索引作为参数，构建任务池
-    with concurrent.futures.ProcessPoolExecutor(max_workers=40) as executor:
+    with concurrent.futures.ProcessPoolExecutor(max_workers=128) as executor:
         futures = {executor.submit(execute_pesp_bev, task): task for task in task_list}
 
         with tqdm(total=len(futures)) as pbar:

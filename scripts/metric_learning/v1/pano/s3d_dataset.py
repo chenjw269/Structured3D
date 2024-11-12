@@ -13,9 +13,9 @@ from scripts.metric_learning.v1.neighbor_sample import * # 随机采样，随机
 from scripts.utils.extract_local_patches import extract_local_patches # 获取地图上的局部地图
 
 
-class S3DMetricLearning(Dataset):
+class S3DPanoramaMC(Dataset):
     def __init__(self, csv_pth):
-        super(S3DMetricLearning, self).__init__()
+        super(S3DPanoramaMC, self).__init__()
         
         self.data = pd.read_csv(csv_pth)
         self.resolution = 25 # 2.5 cm, 0.025 m / pixel
@@ -77,7 +77,10 @@ class S3DMetricLearning(Dataset):
         )
         negative_lm = extract_local_patches(global_map, negative_sample_pos)
         negative_lm = torch.Tensor(negative_lm)
-        
+
+        assert positive_lm.shape == (positive_nums, 256, 256)
+        assert negative_lm.shape == (negative_nums, 256, 256)
+
         data = {
             "local map": local_map,
             "gt pos": gt_pos,

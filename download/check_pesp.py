@@ -47,12 +47,12 @@ def check_img(path):
 if __name__ == "__main__":
     
     # 记录到日志文件
-    f_record = open("logs/pesp_obs_loss.txt", "w", encoding="utf-8")
+    f_record = open(s3d_pesp_obs_err, "a", encoding="utf-8")
     
     # # Structured3D 包括 3500 个场景
     # scene_index_list = [f"scene_{num:05}" for num in range(3500)]
     # 取前 100 个场景
-    scene_index_list = [f"scene_{num:05}" for num in range(100)]
+    scene_index_list = [f"scene_{num:05}" for num in range(400)]
     
     # 去掉标注数据缺失的场景
     for scene_index in tqdm(scene_index_list):
@@ -63,7 +63,7 @@ if __name__ == "__main__":
     # 遍历场景
     for scene_index in tqdm(scene_index_list):
         # 场景数据路径
-        scene_data_dir = os.path.join(s3d_data_pth, scene_index, "2D_rendering")
+        scene_data_dir = os.path.join(s3d_pesp_data_pth, scene_index, "2D_rendering")
         sample_index_list = os.listdir(scene_data_dir)
         
         # 遍历样本
@@ -94,6 +94,6 @@ if __name__ == "__main__":
                     pass
                 else:
                     tqdm.write(f"Pesp obs loss {scene_index}/{sample_index}/{ori_index}")
-                    f_record.write(f"{scene_index},{sample_index},{ori_index}")
+                    f_record.write(f"{scene_index},{sample_index},{ori_index}\n")
 
     f_record.close()

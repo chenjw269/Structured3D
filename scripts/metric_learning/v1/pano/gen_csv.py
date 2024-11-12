@@ -38,7 +38,7 @@ def generate_scene_csv(scene_index):
         #     continue
 
         # csv 每一行存储 bev 路径列表，cad 地图路径，位姿真值列表
-        
+
         # 场景标注
         scene_bound_list.append(scene_bound)
 

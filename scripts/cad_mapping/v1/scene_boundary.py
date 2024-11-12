@@ -114,7 +114,7 @@ def execute_scene_boundary(scene_index):
         scene_info["y_max"][0] = max(scene_info["y_max"][0], outwall_polygon[:,1].max())
 
     # 遍历场景物体的多边形，更新边界
-    for obj in tqdm(scene_obj, leave=False):
+    for obj in scene_obj:
         scene_info["x_min"][0] = min(obj[0][:,0].min(), scene_info["x_min"][0])
         scene_info["x_max"][0] = max(obj[0][:,0].max(), scene_info["x_max"][0])
         scene_info["y_min"][0] = min(obj[0][:,1].min(), scene_info["y_min"][0])

@@ -1,5 +1,9 @@
 # 20241017
 # 遍历下载链接进行下载
+import sys
+sys.path.append('../')
+
+from s3d import *
 
 import requests
 import os
@@ -10,7 +14,7 @@ panorama_links = []
 perspective_full_links = []
 
 # 读取文件并提取链接
-with open('download/README.txt', 'r') as file:
+with open(s3d_download_url, 'r') as file:
     lines = file.readlines()
     for line in lines:
         if line.startswith('https://zju-kjl-jointlab-azure.kujiale.com/zju-kjl-jointlab/Structured3D/Structured3D_panorama_'):
@@ -39,7 +43,7 @@ def download_file(url, file_path):
             print(f"下载失败: {e}, 正在重试...")
 
 # 创建保存压缩包的目录
-save_pth = 'D:/dataset/S3D'
+save_pth = s3d_download_pth
 if not os.path.exists(save_pth):
     os.makedirs(save_pth)
 
@@ -50,10 +54,7 @@ if not os.path.exists(save_pth):
 #     download_file(link, file_path)
 
 # 下载Perspective (full)压缩包
-for link in perspective_full_links[10:]:
+for link in perspective_full_links:
     file_name = link.split('/')[-1]
     file_path = os.path.join(save_pth, file_name)
     download_file(link, file_path)
-
-# 已经解压 0-6
-# 待解压 7
