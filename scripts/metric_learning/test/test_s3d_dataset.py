@@ -8,7 +8,7 @@ from torch.utils.data import DataLoader
 import sys
 sys.path.append(".")
 
-from scripts.metric_learning.s3d_dataset import S3D_Dataset
+from scripts.metric_learning.v1.pano.s3d_dataset import S3D_Dataset
 from scripts.utils.visualize_occ import visualize_occ # 可视化占用网格
 from assets.semantic2label import LABEL_TO_COLOR
 

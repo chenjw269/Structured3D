@@ -16,10 +16,10 @@ from scripts.inference.position_hypothesis import generate_scene_hypothesis
 from scripts.utils.extract_local_patches import extract_local_patches
 
 
-class S3DInference(Dataset):
+class S3DInferencePosition(Dataset):
     
     def __init__(self, csv_pth):
-        super(S3DInference, self).__init__()
+        super(S3DInferencePosition, self).__init__()
 
         self.data = pd.read_csv(csv_pth)
         self.resolution = 25 # 2.5 cm, 0.025 m / pixel
@@ -56,3 +56,30 @@ class S3DInference(Dataset):
         }
         
         return data
+
+class S3DInferencePose(Dataset):
+    
+    def __init__(self, csv_pth):
+        super(S3DInferencePose, self).__init__()
+        
+        self.data = pd.read_csv(csv_pth)
+        self.resolution = 25 #
+        
+    def __len__(self):
+        return len(self.data)
+    
+    def __getitem__(self, index):
+        
+        # 局部地图
+        # 全局地图
+        # 
+
+        # 当前场景标注
+        scene_annos = self.data['annos'][index]
+        scene_annos = pd.read_csv(scene_annos)
+        # 从场景地图上采样位置假设
+        pos_hypothesis = generate_scene_hypothesis(scene_annos)
+        # 从场景地图上采样观测假设
+        ori_hypothesis = 
+        
+        return super().__getitem__(index)

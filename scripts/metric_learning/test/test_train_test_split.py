@@ -4,7 +4,7 @@ import sys
 sys.path.append(".")
 
 from s3d import *
-from scripts.metric_learning.s3d_dataset import S3DMetricLearning # s3d 度量学习数据集
+from scripts.metric_learning.v1.pano.s3d_dataset import S3DMetricLearning # s3d 度量学习数据集
 
 import os # 拼接文件路径
 from tqdm import tqdm # 进度条

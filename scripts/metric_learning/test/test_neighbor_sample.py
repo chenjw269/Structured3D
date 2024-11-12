@@ -13,7 +13,7 @@ import sys
 sys.path.append(".")
 
 from scripts.cad_mapping_v1.coord_conv import position_to_pixel # 坐标转换
-from scripts.metric_learning.neighbor_sample import * # 采样正负样例位置
+from scripts.metric_learning.v1.neighbor_sample import * # 采样正负样例位置
 from scripts.utils.visualize_occ import visualize_occ # 可视化占用网格
 from assets.semantic2label import LABEL_TO_COLOR
 

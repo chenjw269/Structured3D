@@ -13,8 +13,8 @@ import numpy as np # 读取样本位置
 import pandas as pd # 读取场景边界
 from tqdm import tqdm # 进度条
 from scripts.cad_mapping_v1.coord_conv import position_to_pixel # 坐标转换
-from scripts.metric_learning.neighbor_sample import generate_neighbor_within # 采样正样例
-from scripts.metric_learning.neighbor_sample import generate_neighbor_between # 采样负样例
+from scripts.metric_learning.v1.neighbor_sample import generate_neighbor_within # 采样正样例
+from scripts.metric_learning.v1.neighbor_sample import generate_neighbor_between # 采样负样例
 
 
 def execute_sample_pn(scene_index):
