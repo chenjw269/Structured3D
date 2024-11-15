@@ -17,7 +17,7 @@ import time # 测量程序运行时间
 import pandas as pd # 读取场景边界
 import concurrent.futures # 多进程
 from tqdm import tqdm # 进度条
-from scripts.inference.position_hypothesis import generate_scene_hypothesis # 采样位置假设
+from scripts.hypothesis.v1.pano.position_hypothesis import generate_scene_hypothesis # 采样位置假设
 
 
 def execute_position_hypothesis(scene_index):

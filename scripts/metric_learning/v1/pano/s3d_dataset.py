@@ -9,7 +9,7 @@ from torch.utils.data import Dataset
 import sys
 sys.path.append(".")
 
-from scripts.metric_learning.v1.neighbor_sample import * # 随机采样，随机近邻和远邻
+from scripts.metric_learning.neighbor_sample_v0 import * # 随机采样，随机近邻和远邻
 from scripts.utils.extract_local_patches import extract_local_patches # 获取地图上的局部地图
 
 

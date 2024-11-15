@@ -16,12 +16,12 @@ def generate_scene_csv(scene_index):
     # 场景地图
     scene_map = os.path.join(s3d_map_pth, scene_index, "map.npy")
     # 场景边界
-    scene_bound = pd.read_csv(os.path.join(s3d_data_pth, scene_index, "boundary.csv"))
+    scene_bound = os.path.join(s3d_annos_pth, scene_index, "boundary.csv")
 
     # bev 观测
     bev_dir = os.path.join(s3d_bev_pth, scene_index, "2D_rendering")
     # 位姿真值
-    data_dir = os.path.join(s3d_data_pth, scene_index, "2D_rendering")
+    data_dir = os.path.join(s3d_pesp_data_pth, scene_index, "2D_rendering")
 
     # 遍历所有样本
     sample_list = os.listdir(data_dir)
@@ -29,12 +29,12 @@ def generate_scene_csv(scene_index):
         sample_dir = os.path.join(data_dir, sample_item, "perspective/full")
 
         # 遍历所有朝向
-        ori_list = os.listdir(sample_dir)        
+        ori_list = os.listdir(sample_dir)
         for ori_item in ori_list:
             
             # csv 每一行存储位姿真值列表，bev 路径列表，cad 地图路径
             pos = os.path.join(
-                s3d_data_pth, scene_index, "2D_rendering", sample_item, "perspective/full", ori_item, "camera_pose.txt"
+                s3d_pesp_data_pth, scene_index, "2D_rendering", sample_item, "perspective/full", ori_item, "camera_pose.txt"
             )
             sample_pos_list.append(pos)
         
@@ -61,8 +61,8 @@ def generate_scene_csv(scene_index):
 
 if __name__ == "__main__":
     
-    # Structured3D 包括 3500 个场景
-    scene_index_list = [f"scene_{num:05}" for num in range(3500)]
+    # # Structured3D 包括 3500 个场景
+    # scene_index_list = [f"scene_{num:05}" for num in range(3500)]
     # 测试：使用前 100 个场景
     scene_index_list = [f"scene_{num:05}" for num in range(100)]
     

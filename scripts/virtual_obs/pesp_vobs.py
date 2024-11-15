@@ -148,16 +148,21 @@ def virtual_pesp_obs(map_image, pose, fov=80):
     Returns:
         np.array: 虚拟观测 bev
     """
-
     map_image_cp = copy.copy(map_image)
 
     #########################################
     # 虚拟观测的视野
     #########################################
+
+    if isinstance(pose, np.ndarray):
+        position = pose[:2].astype(int)
+    else:
+        position = pose[:2]
+
     # 将视野外的内容覆盖
     view_range_mask = generate_ellipse_mask(
         image=map_image_cp,
-        center=pose[:2].astype(int), angle=pose[2], fov=fov, mode="occ")
+        center=position, angle=pose[2], fov=fov, mode="occ")
     map_image_cp = view_range_mask * map_image_cp
 
     ##########################################
@@ -178,3 +183,25 @@ def virtual_pesp_obs(map_image, pose, fov=80):
     ]
     
     return map_image_cp
+
+def virtual_pesp_obs_batch(map_image, pose, fov=80):
+    """批量地，根据相机位姿，从 cad 地图上获取虚拟观测 bev
+
+    Args:
+        map_image (np.array): cad 地图
+        pose (np.array): 批量相机 2d 位姿 (n,x,y,yaw)
+        fov (float): 视野范围
+
+    Returns:
+        np.array: 批量虚拟观测 bev
+    """
+    obs_total = []
+    n = pose.shape[0]
+    
+    for i in range(n):
+        obs_item = virtual_pesp_obs(map_image, pose[i], fov)
+        obs_total.append(obs_item)
+    
+    obs_total = np.stack(obs_total)
+    
+    return obs_total

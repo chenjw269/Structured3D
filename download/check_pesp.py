@@ -52,7 +52,7 @@ if __name__ == "__main__":
     # # Structured3D 包括 3500 个场景
     # scene_index_list = [f"scene_{num:05}" for num in range(3500)]
     # 取前 100 个场景
-    scene_index_list = [f"scene_{num:05}" for num in range(2400)]
+    scene_index_list = [f"scene_{num:05}" for num in range(3000, 3200)]
     
     # 去掉标注数据缺失的场景
     for scene_index in tqdm(scene_index_list):
